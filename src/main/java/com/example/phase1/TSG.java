@@ -16,14 +16,14 @@ import java.util.Random;
 
 public class TSG extends Application {
     private static final int GRID_SIZE = 10;
-    private static final int CELL_SIZE = 100; // Adjust as needed
+    private static final int CELL_SIZE = 100;
 
     private ImageView player1View;
     private ImageView player2View;
-    private int player1X = 0; //player 1 location
-    private int player1Y = 0; //player 1 location
-    private int player2X = 0; //player 2 location
-    private int player2Y = 0; //player 2 location
+    private int player1X = 0; //player 1 location x
+    private int player1Y = 0; //player 1 location y
+    private int player2X = 0; //player 2 location x
+    private int player2Y = 0; //player 2 location y
     private boolean player1Turn = true;
 
     private final Rectangle[][] mapGridCells = new Rectangle[GRID_SIZE][GRID_SIZE];
@@ -54,7 +54,7 @@ public class TSG extends Application {
         placeRandomElements(mapGridCells, 8, Color.GREEN);
 
         // Place walls randomly
-        placeRandomElements(mapGridCells, 12, Color.WHITE); // Adjust the number of walls as needed
+        placeRandomElements(mapGridCells, 20, Color.WHITE);
 
         // Place markets randomly
         placeRandomElements(mapGridCells, 4, Color.ORANGE);
