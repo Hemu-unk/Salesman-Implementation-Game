@@ -18,65 +18,63 @@ public class TSG extends Application {
     private static final int GRID_SIZE = 10;
     private static final int CELL_SIZE = 100;
 
-    // Player 1 attributes
     private ImageView player1View;
-    private int player1X = 0; // Player 1 X-coordinate
-    private int player1Y = 0; // Player 1 Y-coordinate
-
-    // Player 2 attributes
     private ImageView player2View;
-    private int player2X = 0; // Player 2 X-coordinate
-    private int player2Y = 0; // Player 2 Y-coordinate
-
+    private int player1X = 0; //player 1 location x
+    private int player1Y = 0; //player 1 location y
+    private int player2X = 0; //player 2 location x
+    private int player2Y = 0; //player 2 location y
     private boolean player1Turn = true;
 
-    // 2D array for grid cells
     private final Rectangle[][] mapGridCells = new Rectangle[GRID_SIZE][GRID_SIZE];
 
     @Override
     public void start(Stage stage) {
-        // Initialize grid to hold the game map
         GridPane mapGrid = new GridPane();
         mapGrid.setHgap(1);
         mapGrid.setVgap(1);
 
-        // Set white background for the map grid
-        mapGrid.setStyle("-fx-background-color: white;");
+        // Set white background
+        mapGrid.setStyle("-fx-background-color: white;"); //set to black
 
-        // Create map grid cells
+        // Create map grid cells with for loop
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
                 Rectangle cell = new Rectangle(CELL_SIZE, CELL_SIZE);
-                cell.setFill(Color.BLACK); // Default color for cells
+                cell.setFill(Color.BLACK); // Default color (should change to white!!!)
                 mapGrid.add(cell, i, j);
                 mapGridCells[i][j] = cell;
             }
         }
 
-        // castle location in the middle of the grid
+        // Set castle location in the middle
         setMapElement(GRID_SIZE / 2, GRID_SIZE / 2, Color.YELLOW);
 
-        // Placement of map components
-        placeRandomElements(mapGridCells, 8, Color.GREEN); // Treasures
-        placeRandomElements(mapGridCells, 20, Color.WHITE); // Walls
-        placeRandomElements(mapGridCells, 4, Color.ORANGE); // Markets
-        placeRandomElements(mapGridCells, 6, Color.RED); // Traps
-        placeRandomElements(mapGridCells, 4, Color.BLUE); // Lost items
+        // Place treasures randomly
+        placeRandomElements(mapGridCells, 8, Color.GREEN);
 
-        // Initialize player 1 on the map
+        // Place walls randomly
+        placeRandomElements(mapGridCells, 20, Color.WHITE); //SHOULD CHANGE TO BLACK
+
+        // Place markets randomly
+        placeRandomElements(mapGridCells, 4, Color.ORANGE);
+
+        // Place traps randomly
+        placeRandomElements(mapGridCells, 6, Color.RED);
+
+        // Place lost items randomly
+        placeRandomElements(mapGridCells, 4, Color.BLUE);
+
+        // Initialize players
         player1View = createPlayerView("player_pawn.png");
         movePlayerTo(player1View, player1X, player1Y);
         mapGrid.getChildren().add(player1View);
 
-        // Initialize player 2 on the map
         player2View = createPlayerView("player_pawn2.png");
         movePlayerTo(player2View, player2X, player2Y);
         mapGrid.getChildren().add(player2View);
-
-        // Create the game scene
+//new scene each time player moves
         Scene scene = new Scene(mapGrid, GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE);
-
-        // Event handler for key presses to move players
         scene.setOnKeyPressed(e -> {
             if (player1Turn) {
                 movePlayer(player1View, e.getCode());
@@ -84,15 +82,12 @@ public class TSG extends Application {
                 movePlayer(player2View, e.getCode());
             }
         });
-
-        // Set up the stage
-        stage.setTitle("Traveling Salesman Game"); // Set title
-        stage.setResizable(false); // Make stage non-resizable
-        stage.setScene(scene); // Set the scene
-        stage.show(); // Show the stage
+        stage.setTitle("Traveling Salesman Game"); //name of game application
+        stage.setResizable(false);
+        stage.setScene(scene);
+        stage.show();
     }
 
-    // Method to create an ImageView for a player
     private ImageView createPlayerView(String imagePath) {
         ImageView playerView = new ImageView(new Image(imagePath));
         playerView.setFitWidth(CELL_SIZE);
@@ -100,18 +95,16 @@ public class TSG extends Application {
         return playerView;
     }
 
-    // Method to move a player based on keyboard input
+    //code block for changing/moving character
     private void movePlayer(ImageView playerView, KeyCode keyCode) {
         int newX = player1X;
         int newY = player1Y;
 
-        // Determine current player's position
         if (playerView == player2View) {
             newX = player2X;
             newY = player2Y;
         }
 
-        // Update position based on keyboard input
         switch (keyCode) {
             case UP:
                 newY = Math.max(0, newY - 1);
@@ -129,13 +122,11 @@ public class TSG extends Application {
                 return; // Do nothing for other keys
         }
 
-        // Check if the move is valid and update the player's position
         if (isValidMove(newX, newY)) {
             movePlayerTo(playerView, newX, newY);
         }
     }
 
-    // Method to check if a move is valid
     private boolean isValidMove(int x, int y) {
         // Check if the new position is within the bounds of the grid
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
@@ -147,9 +138,8 @@ public class TSG extends Application {
         return !cellColor.equals(Color.WHITE); // Return false if the cell contains a wall
     }
 
-    // Method to move a player to a new position on the map
+
     private void movePlayerTo(ImageView playerView, int x, int y) {
-        // Update player's position
         if (playerView == player1View) {
             player1X = x;
             player1Y = y;
@@ -158,29 +148,23 @@ public class TSG extends Application {
             player2Y = y;
         }
 
-        // Set player's position in the grid pane
         GridPane.setColumnIndex(playerView, x);
         GridPane.setRowIndex(playerView, y);
-
-        // Switch turns after each move
-        player1Turn = !player1Turn;
+        player1Turn = !player1Turn; // Switch turns after each move
     }
 
-    // Method to set an element (e.g., castle, treasure) on the map
     private void setMapElement(int x, int y, Color color) {
         mapGridCells[x][y].setFill(color);
     }
 
-    // Method to randomly place elements (e.g., treasures, walls) on the map
     private void placeRandomElements(Rectangle[][] mapGridCells, int count, Color color) {
-        // Generate random indices
         List<Integer> indices = new ArrayList<>();
         for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
             indices.add(i);
         }
         Collections.shuffle(indices);
 
-        // Place elements at random positions
+        Random random = new Random();
         for (int i = 0; i < count; i++) {
             int index = indices.get(i);
             int x = index % GRID_SIZE;
@@ -189,7 +173,6 @@ public class TSG extends Application {
         }
     }
 
-    // method to launch the application
     public static void main(String[] args) {
         launch();
     }
