@@ -20,10 +20,10 @@ public class TSG extends Application {
 
     private ImageView player1View;
     private ImageView player2View;
-    private int player1X = 0; //player 1 location
-    private int player1Y = 0; //player 1 location
-    private int player2X = 0; //player 2 location
-    private int player2Y = 0; //player 2 location
+    private int player1X = 0; //player 1 location x
+    private int player1Y = 0; //player 1 location y
+    private int player2X = 0; //player 2 location x
+    private int player2Y = 0; //player 2 location y
     private boolean player1Turn = true;
 
     private final Rectangle[][] mapGridCells = new Rectangle[GRID_SIZE][GRID_SIZE];
