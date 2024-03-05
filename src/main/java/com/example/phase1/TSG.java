@@ -35,13 +35,13 @@ public class TSG extends Application {
         mapGrid.setVgap(1);
 
         // Set white background
-        mapGrid.setStyle("-fx-background-color: white;");
+        mapGrid.setStyle("-fx-background-color: white;"); //set to black
 
-        // Create map grid cells
+        // Create map grid cells with for loop
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
                 Rectangle cell = new Rectangle(CELL_SIZE, CELL_SIZE);
-                cell.setFill(Color.BLACK); // Default color
+                cell.setFill(Color.BLACK); // Default color (should change to white!!!)
                 mapGrid.add(cell, i, j);
                 mapGridCells[i][j] = cell;
             }
@@ -54,7 +54,7 @@ public class TSG extends Application {
         placeRandomElements(mapGridCells, 8, Color.GREEN);
 
         // Place walls randomly
-        placeRandomElements(mapGridCells, 20, Color.WHITE);
+        placeRandomElements(mapGridCells, 20, Color.WHITE); //SHOULD CHANGE TO BLACK
 
         // Place markets randomly
         placeRandomElements(mapGridCells, 4, Color.ORANGE);
@@ -73,7 +73,7 @@ public class TSG extends Application {
         player2View = createPlayerView("player_pawn2.png");
         movePlayerTo(player2View, player2X, player2Y);
         mapGrid.getChildren().add(player2View);
-
+//new scene each time player moves
         Scene scene = new Scene(mapGrid, GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE);
         scene.setOnKeyPressed(e -> {
             if (player1Turn) {
