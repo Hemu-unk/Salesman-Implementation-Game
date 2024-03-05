@@ -95,6 +95,7 @@ public class TSG extends Application {
         return playerView;
     }
 
+    //changing/moving characters
     private void movePlayer(ImageView playerView, KeyCode keyCode) {
         int newX = player1X;
         int newY = player1Y;
