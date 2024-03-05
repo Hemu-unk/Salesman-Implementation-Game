@@ -82,7 +82,7 @@ public class TSG extends Application {
                 movePlayer(player2View, e.getCode());
             }
         });
-        stage.setTitle("Traveling Salesman Game");
+        stage.setTitle("Traveling Salesman Game"); //name of game application
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
