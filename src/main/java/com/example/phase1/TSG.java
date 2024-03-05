@@ -41,7 +41,7 @@ public class TSG extends Application {
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
                 Rectangle cell = new Rectangle(CELL_SIZE, CELL_SIZE);
-                cell.setFill(Color.BLACK); // Default color (should change to white!!!)
+                cell.setFill(Color.WHITE); // Default color (should change to white!!!)
                 mapGrid.add(cell, i, j);
                 mapGridCells[i][j] = cell;
             }
@@ -54,7 +54,7 @@ public class TSG extends Application {
         placeRandomElements(mapGridCells, 8, Color.GREEN);
 
         // Place walls randomly
-        placeRandomElements(mapGridCells, 20, Color.WHITE); //SHOULD CHANGE TO BLACK
+        placeRandomElements(mapGridCells, 20, Color.BLACK); //SHOULD CHANGE TO BLACK
 
         // Place markets randomly
         placeRandomElements(mapGridCells, 4, Color.ORANGE);
@@ -135,7 +135,7 @@ public class TSG extends Application {
 
         // Check if the new position contains a wall
         Color cellColor = (Color) mapGridCells[x][y].getFill();
-        return !cellColor.equals(Color.WHITE); // Return false if the cell contains a wall
+        return !cellColor.equals(Color.BLACK); // Return false if the cell contains a wall (changed to black)
     }
 
 
