@@ -12,11 +12,10 @@ import javafx.stage.Stage;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 public class TSG extends Application {
-    private static final int GRID_SIZE = 10;
-    private static final int CELL_SIZE = 100;
+    private static final int GRID_SIZE = 9; //grid size
+    private static final int CELL_SIZE = 90; // cell size
 
     // Player 1 attributes
     private ImageView player1View;
@@ -37,8 +36,8 @@ public class TSG extends Application {
     public void start(Stage stage) {
         // Initialize a grid pane to hold the game map
         GridPane mapGrid = new GridPane();
-        mapGrid.setHgap(1);
-        mapGrid.setVgap(1);
+        mapGrid.setHgap(1); //grid thickness x
+        mapGrid.setVgap(1); //grid thickness y
 
         // Set white background for the map grid
         mapGrid.setStyle("-fx-background-color: white;");
@@ -47,7 +46,8 @@ public class TSG extends Application {
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
                 Rectangle cell = new Rectangle(CELL_SIZE, CELL_SIZE);
-                cell.setFill(Color.BLACK); // Default color for cells
+                cell.setFill(Color.LIGHTSLATEGRAY);
+                cell.setStroke(Color.BLACK);
                 mapGrid.add(cell, i, j);
                 mapGridCells[i][j] = cell;
             }
@@ -58,7 +58,7 @@ public class TSG extends Application {
 
         // Place different elements randomly on the map
         placeRandomElements(mapGridCells, 8, Color.GREEN); // Treasures
-        placeRandomElements(mapGridCells, 20, Color.WHITE); // Walls
+        placeRandomElements(mapGridCells, 20, Color.BLACK); // Walls
         placeRandomElements(mapGridCells, 4, Color.ORANGE); // Markets
         placeRandomElements(mapGridCells, 6, Color.RED); // Traps
         placeRandomElements(mapGridCells, 4, Color.BLUE); // Lost items
@@ -73,8 +73,10 @@ public class TSG extends Application {
         movePlayerTo(player2View, player2X, player2Y);
         mapGrid.getChildren().add(player2View);
 
-        // Create the game scene
-        Scene scene = new Scene(mapGrid, GRID_SIZE * CELL_SIZE, GRID_SIZE * CELL_SIZE);
+        // Adjustments for the game scene
+        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1; // Adjust for grid lines
+        int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1; // Adjust for grid lines
+        Scene scene = new Scene(mapGrid, sceneWidth, sceneHeight);
 
         // Event handler for key presses to move players
         scene.setOnKeyPressed(e -> {
@@ -144,7 +146,7 @@ public class TSG extends Application {
 
         // Check if the new position contains a wall
         Color cellColor = (Color) mapGridCells[x][y].getFill();
-        return !cellColor.equals(Color.WHITE); // Return false if the cell contains a wall
+        return !cellColor.equals(Color.BLACK); // Return false if the cell contains a wall
     }
 
     // Method to move a player to a new position on the map
@@ -173,10 +175,14 @@ public class TSG extends Application {
 
     // Method to randomly place elements (e.g., treasures, walls) on the map
     private void placeRandomElements(Rectangle[][] mapGridCells, int count, Color color) {
-        // Generate random indices
+        // Generate random indices excluding the castle location
         List<Integer> indices = new ArrayList<>();
         for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-            indices.add(i);
+            int x = i % GRID_SIZE;
+            int y = i / GRID_SIZE;
+            if (mapGridCells[x][y].getFill() != Color.YELLOW) {
+                indices.add(i);
+            }
         }
         Collections.shuffle(indices);
 
