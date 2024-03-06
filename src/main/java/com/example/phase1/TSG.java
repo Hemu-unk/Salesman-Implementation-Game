@@ -1,13 +1,18 @@
 package com.example.phase1;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -26,6 +31,7 @@ public class TSG extends Application {
     private final Rectangle[][] mapGridCells = new Rectangle[GRID_SIZE][GRID_SIZE];
     private final Map<String, Treasure> player1Treasures = new HashMap<>();
     private final Map<String, Treasure> player2Treasures = new HashMap<>();
+    private Random random = new Random();
     private static final Treasure[] treasures = {
             new Treasure("Diamond Ring", 100),
             new Treasure("Jewel-encrusted Sword", 150),
@@ -43,6 +49,7 @@ public class TSG extends Application {
     private int player2TreasureValue = 0;
     private boolean player1EnteredCell = false;
     private boolean player2EnteredCell = false;
+    private Button rollButton;
     @Override
     public void start(Stage stage) {
         GridPane mapGrid = new GridPane();
@@ -61,7 +68,7 @@ public class TSG extends Application {
         }
         setMapElement(GRID_SIZE / 2, GRID_SIZE / 2, Color.YELLOW);
         placeRandomElements(mapGridCells, 15, Color.BLACK);
-        placeRandomElements(mapGridCells, 7, Color.ORANGE);
+        placeRandomElements(mapGridCells, 5, Color.ORANGE);
         placeRandomElements(mapGridCells, 6, Color.RED);
         placeRandomElements(mapGridCells, 4, Color.BLUE);
         placeRandomTreasures(mapGridCells, 8);
@@ -76,15 +83,25 @@ public class TSG extends Application {
 
         populateWeaponsMarket();
 
+        rollButton = new Button("Roll Die");
+        rollButton.setOnAction(e -> rollDieAndDisplayResult());
+
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.getChildren().add(rollButton);
+
+        VBox root = new VBox(10);
+        root.getChildren().addAll(mapGrid, buttonBox);
+
         int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1;
-        int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1;
-        Scene scene = new Scene(mapGrid, sceneWidth, sceneHeight);
+        int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra space for button
+        Scene scene = new Scene(root, sceneWidth, sceneHeight);
 
         scene.setOnKeyPressed(e -> {
             if (player1Turn) {
-                movePlayer(player1View, e.getCode());
+                movePlayer(player1View, e.getCode(), rollDie());
             } else {
-                movePlayer(player2View, e.getCode());
+                movePlayer(player2View, e.getCode(), rollDie());
             }
             checkForPlayerCollision(); // Call checkForPlayerCollision() after each move
         });
@@ -94,13 +111,31 @@ public class TSG extends Application {
         stage.setScene(scene);
         stage.show();
     }
+    private void rollDieAndDisplayResult() {
+        int rollResult = rollDie();
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Die Roll Result");
+        alert.setHeaderText(null);
+        alert.setContentText("You rolled a " + rollResult + "!");
+        alert.showAndWait();
+
+        // Set focus to the game scene after displaying the die roll result
+        Scene scene = rollButton.getScene();
+        if (scene != null) {
+            scene.getRoot().requestFocus();
+        }
+    }
+    private int rollDie() {
+        // Simulate rolling a six-sided die
+        return random.nextInt(6) + 1;
+    }
     private ImageView createPlayerView(String imagePath) {
         ImageView playerView = new ImageView(new Image(imagePath));
         playerView.setFitWidth(CELL_SIZE);
         playerView.setFitHeight(CELL_SIZE);
         return playerView;
     }
-    private void movePlayer(ImageView playerView, KeyCode keyCode) {
+    private void movePlayer(ImageView playerView, KeyCode keyCode, int steps) {
         int newX = player1X;
         int newY = player1Y;
 
@@ -108,6 +143,7 @@ public class TSG extends Application {
             newX = player2X;
             newY = player2Y;
         }
+
         switch (keyCode) {
             case UP:
                 newY = Math.max(0, newY - 1);
@@ -131,9 +167,11 @@ public class TSG extends Application {
             default:
                 return;
         }
-        if (isValidMove(newX, newY)) {
-            movePlayerTo(playerView, newX, newY);
+        if (!isValidMove(newX, newY)) {
+            // If the move is invalid, do not move the player
+            return;
         }
+        movePlayerTo(playerView, newX, newY);
     }
     private boolean isValidMove(int x, int y) {
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
