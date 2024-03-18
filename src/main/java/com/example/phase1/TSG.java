@@ -9,7 +9,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -73,18 +72,25 @@ public class TSG extends Application {
         placeRandomElements(mapGridCells, 4, Color.BLUE);
         placeRandomTreasures(mapGridCells, 8);
 
-        player1View = createPlayerView("player_pawn.png");
-        movePlayerTo(player1View, player1X, player1Y);
-        mapGrid.getChildren().add(player1View);
-
-        player2View = createPlayerView("player_pawn2.png");
-        movePlayerTo(player2View, player2X, player2Y);
-        mapGrid.getChildren().add(player2View);
+        rollButton = new Button("Roll Die");
+        rollButton.setOnAction(e -> {
+            rollDieAndDisplayResult();
+            if (player1View == null) {
+                player1View = createPlayerView("player_pawn.png");
+                movePlayerTo(player1View, player1X, player1Y);
+                mapGrid.getChildren().add(player1View);
+                // Set player1Turn to true when player 1 becomes visible
+                player1Turn = true;
+            } else if (player2View == null) {
+                player2View = createPlayerView("player_pawn2.png");
+                movePlayerTo(player2View, player2X, player2Y);
+                mapGrid.getChildren().add(player2View);
+                // Set player1Turn to false after player 2 becomes visible
+                player1Turn = false;
+            }
+        });
 
         populateWeaponsMarket();
-
-        rollButton = new Button("Roll Die");
-        rollButton.setOnAction(e -> rollDieAndDisplayResult());
 
         HBox buttonBox = new HBox(10);
         buttonBox.setAlignment(Pos.CENTER);
@@ -100,7 +106,7 @@ public class TSG extends Application {
         scene.setOnKeyPressed(e -> {
             if (player1Turn) {
                 movePlayer(player1View, e.getCode(), rollDie());
-            } else {
+            } else if (player2View != null) {
                 movePlayer(player2View, e.getCode(), rollDie());
             }
             checkForPlayerCollision(); // Call checkForPlayerCollision() after each move
@@ -325,22 +331,27 @@ public class TSG extends Application {
         mapGridCells[x][y].setFill(color);
     }
     private void placeRandomElements(Rectangle[][] mapGridCells, int count, Color color) {
-        List<Integer> indices = new ArrayList<>();
-        for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-            int x = i % GRID_SIZE;
-            int y = i / GRID_SIZE;
-            if (mapGridCells[x][y].getFill() != Color.YELLOW) {
-                indices.add(i);
-            }
-        }
-        Collections.shuffle(indices);
+        List<Integer> availableIndices = getAvailableIndices(mapGridCells, color);
 
-        for (int i = 0; i < count; i++) {
-            int index = indices.get(i);
+        for (int i = 0; i < count && !availableIndices.isEmpty(); i++) {
+            Collections.shuffle(availableIndices);
+            int index = availableIndices.remove(0);
             int x = index % GRID_SIZE;
             int y = index / GRID_SIZE;
             setMapElement(x, y, color);
         }
+    }
+
+    private List<Integer> getAvailableIndices(Rectangle[][] mapGridCells, Color color) {
+        List<Integer> availableIndices = new ArrayList<>();
+        for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+            int x = i % GRID_SIZE;
+            int y = i / GRID_SIZE;
+            if (mapGridCells[x][y].getFill() != Color.YELLOW) {
+                availableIndices.add(i);
+            }
+        }
+        return availableIndices;
     }
     private void placeRandomTreasures(Rectangle[][] mapGridCells, int count) {
         List<Treasure> treasuresList = new ArrayList<>(Arrays.asList(treasures));
