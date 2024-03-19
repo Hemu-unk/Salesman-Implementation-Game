@@ -86,7 +86,7 @@ public class TSG extends Application {
                 movePlayerTo(player2View, player2X, player2Y);
                 mapGrid.getChildren().add(player2View);
                 // Set player1Turn to false after player 2 becomes visible
-                player1Turn = false;
+                player1Turn = false;//no player turn 2 false/true?
             }
         });
 
@@ -142,8 +142,10 @@ public class TSG extends Application {
         return playerView;
     }
     private void movePlayer(ImageView playerView, KeyCode keyCode, int steps) {
+
         int newX = player1X;
         int newY = player1Y;
+for(int i=0; i<steps; i++){//new move method to allow movement based on die roll WIP
 
         if (playerView == player2View) {
             newX = player2X;
@@ -178,7 +180,7 @@ public class TSG extends Application {
             return;
         }
         movePlayerTo(playerView, newX, newY);
-    }
+    }}
     private boolean isValidMove(int x, int y) {
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
             return false;
