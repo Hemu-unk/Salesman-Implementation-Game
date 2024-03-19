@@ -31,6 +31,7 @@ public class TSG extends Application {
     private final Map<String, Treasure> player1Treasures = new HashMap<>();
     private final Map<String, Treasure> player2Treasures = new HashMap<>();
     private Random random = new Random();
+    private int remainingSteps = 0;
     private static final Treasure[] treasures = {
             new Treasure("Diamond Ring", 100),
             new Treasure("Jewel-encrusted Sword", 150),
@@ -74,7 +75,7 @@ public class TSG extends Application {
 
         rollButton = new Button("Roll Die");
         rollButton.setOnAction(e -> {
-            rollDieAndDisplayResult();
+            remainingSteps = rollDieAndDisplayResult(); // Store the result of the die roll
             if (player1View == null) {
                 player1View = createPlayerView("player_pawn.png");
                 movePlayerTo(player1View, player1X, player1Y);
@@ -88,6 +89,7 @@ public class TSG extends Application {
                 // Set player1Turn to false after player 2 becomes visible
                 player1Turn = false;
             }
+            mapGrid.requestFocus();
         });
 
         populateWeaponsMarket();
@@ -104,12 +106,15 @@ public class TSG extends Application {
         Scene scene = new Scene(root, sceneWidth, sceneHeight);
 
         scene.setOnKeyPressed(e -> {
-            if (player1Turn) {
-                movePlayer(player1View, e.getCode(), rollDie());
-            } else if (player2View != null) {
-                movePlayer(player2View, e.getCode(), rollDie());
+            if (remainingSteps > 0) {
+                if (player1Turn) {
+                    movePlayer(player1View, e.getCode());
+                } else if (player2View != null) {
+                    movePlayer(player2View, e.getCode());
+                }
+                checkForPlayerCollision(); // Call checkForPlayerCollision() after each move
+                remainingSteps--; // Decrement remaining steps after each move
             }
-            checkForPlayerCollision(); // Call checkForPlayerCollision() after each move
         });
 
         stage.setTitle("Traveling Salesman Game");
@@ -117,19 +122,14 @@ public class TSG extends Application {
         stage.setScene(scene);
         stage.show();
     }
-    private void rollDieAndDisplayResult() {
+    private int rollDieAndDisplayResult() {
         int rollResult = rollDie();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Die Roll Result");
         alert.setHeaderText(null);
         alert.setContentText("You rolled a " + rollResult + "!");
         alert.showAndWait();
-
-        // Set focus to the game scene after displaying the die roll result
-        Scene scene = rollButton.getScene();
-        if (scene != null) {
-            scene.getRoot().requestFocus();
-        }
+        return rollResult;
     }
     private int rollDie() {
         // Simulate rolling a six-sided die
@@ -141,43 +141,55 @@ public class TSG extends Application {
         playerView.setFitHeight(CELL_SIZE);
         return playerView;
     }
-    private void movePlayer(ImageView playerView, KeyCode keyCode, int steps) {
-        int newX = player1X;
-        int newY = player1Y;
-
-        if (playerView == player2View) {
-            newX = player2X;
-            newY = player2Y;
-        }
-
-        switch (keyCode) {
-            case UP:
-                newY = Math.max(0, newY - 1);
-                break;
-            case DOWN:
-                newY = Math.min(GRID_SIZE - 1, newY + 1);
-                break;
-            case LEFT:
-                newX = Math.max(0, newX - 1);
-                break;
-            case RIGHT:
-                newX = Math.min(GRID_SIZE - 1, newX + 1);
-                break;
-            case ENTER:
-                if (player1Turn) {
-                    purchaseWeapon(player1View, "Player 1");
-                } else {
-                    purchaseWeapon(player2View, "Player 2");
-                }
-                break;
-            default:
-                return;
-        }
-        if (!isValidMove(newX, newY)) {
-            // If the move is invalid, do not move the player
+    private void movePlayer(ImageView playerView, KeyCode keyCode) {
+        if (remainingSteps <= 0) {
+            // Player has no remaining steps, return without moving
             return;
         }
+
+        // Determine the player's current position
+        int currentX = playerView == player1View ? player1X : player2X;
+        int currentY = playerView == player1View ? player1Y : player2Y;
+
+        // Calculate the new position based on the key press
+        int newX = currentX;
+        int newY = currentY;
+        switch (keyCode) {
+            case UP:
+                newY = Math.max(0, currentY - 1);
+                break;
+            case DOWN:
+                newY = Math.min(GRID_SIZE - 1, currentY + 1);
+                break;
+            case LEFT:
+                newX = Math.max(0, currentX - 1);
+                break;
+            case RIGHT:
+                newX = Math.min(GRID_SIZE - 1, currentX + 1);
+                break;
+            default:
+                // If the key pressed is not an arrow key, do not move
+                return;
+        }
+
+        // Check if the move is valid (e.g., not moving into an obstacle)
+        if (!isValidMove(newX, newY)) {
+            // If the move is invalid, do not update positions and return
+            return;
+        }
+
+        // Move the player to the new position and decrement the remaining steps
         movePlayerTo(playerView, newX, newY);
+        remainingSteps--; // Decrement the steps remaining after a successful move
+
+        // Update the player's global position variables
+        if (playerView == player1View) {
+            player1X = newX;
+            player1Y = newY;
+        } else {
+            player2X = newX;
+            player2Y = newY;
+        }
     }
     private boolean isValidMove(int x, int y) {
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
