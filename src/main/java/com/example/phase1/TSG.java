@@ -89,7 +89,7 @@ public class TSG extends Application {
                 // Set player1Turn to false after player 2 becomes visible
                 player1Turn = false;
             }
-            mapGrid.requestFocus();
+            mapGrid.requestFocus(); // Ensure the map grid has focus for key events
         });
 
         populateWeaponsMarket();
@@ -151,45 +151,58 @@ public class TSG extends Application {
         int currentX = playerView == player1View ? player1X : player2X;
         int currentY = playerView == player1View ? player1Y : player2Y;
 
-        // Calculate the new position based on the key press
+        // Calculate the new position based on the key press and remaining steps
         int newX = currentX;
         int newY = currentY;
         switch (keyCode) {
             case UP:
-                newY = Math.max(0, currentY - 1);
+                for (int i = 0; i < remainingSteps; i++) {
+                    int nextY = newY - 1;
+                    if (isValidMove(newX, nextY)) {
+                        newY = nextY;
+                    } else {
+                        break; // Stop moving if the next position is invalid
+                    }
+                }
                 break;
             case DOWN:
-                newY = Math.min(GRID_SIZE - 1, currentY + 1);
+                for (int i = 0; i < remainingSteps; i++) {
+                    int nextY = newY + 1;
+                    if (isValidMove(newX, nextY)) {
+                        newY = nextY;
+                    } else {
+                        break; // Stop moving if the next position is invalid
+                    }
+                }
                 break;
             case LEFT:
-                newX = Math.max(0, currentX - 1);
+                for (int i = 0; i < remainingSteps; i++) {
+                    int nextX = newX - 1;
+                    if (isValidMove(nextX, newY)) {
+                        newX = nextX;
+                    } else {
+                        break; // Stop moving if the next position is invalid
+                    }
+                }
                 break;
             case RIGHT:
-                newX = Math.min(GRID_SIZE - 1, currentX + 1);
+                for (int i = 0; i < remainingSteps; i++) {
+                    int nextX = newX + 1;
+                    if (isValidMove(nextX, newY)) {
+                        newX = nextX;
+                    } else {
+                        break; // Stop moving if the next position is invalid
+                    }
+                }
                 break;
             default:
                 // If the key pressed is not an arrow key, do not move
                 return;
         }
 
-        // Check if the move is valid (e.g., not moving into an obstacle)
-        if (!isValidMove(newX, newY)) {
-            // If the move is invalid, do not update positions and return
-            return;
-        }
-
         // Move the player to the new position and decrement the remaining steps
         movePlayerTo(playerView, newX, newY);
-        remainingSteps--; // Decrement the steps remaining after a successful move
-
-        // Update the player's global position variables
-        if (playerView == player1View) {
-            player1X = newX;
-            player1Y = newY;
-        } else {
-            player2X = newX;
-            player2Y = newY;
-        }
+        remainingSteps = 0; // The remaining steps have been used up
     }
     private boolean isValidMove(int x, int y) {
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
