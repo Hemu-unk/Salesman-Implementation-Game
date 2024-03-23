@@ -25,16 +25,16 @@ public class TSG extends Application {
     private static final int GRID_SIZE = 9;
     private static final int CELL_SIZE = 90;
     private ImageView player1View;
-    private int player1X = 0;
-    private int player1Y = 0;
+    private int player1X = 0; //player pos x
+    private int player1Y = 0; //player pos y
     private ImageView player2View;
-    private int player2X = 0;
-    private int player2Y = 0;
+    private int player2X = 0; //player2 pos x
+    private int player2Y = 0; //player2 pos y
     private boolean player1Turn = true;
     private final Rectangle[][] mapGridCells = new Rectangle[GRID_SIZE][GRID_SIZE];
     private final Map<String, Treasure> player1Treasures = new HashMap<>();
     private final Map<String, Treasure> player2Treasures = new HashMap<>();
-    private Random random = new Random();
+    private final Random random = new Random();
     private int remainingSteps = 0;
     private static final Treasure[] treasures = {
             new Treasure("Diamond Ring", 100),
@@ -80,12 +80,14 @@ public class TSG extends Application {
         rollButton = new Button("Roll Die");
         rollButton.setOnAction(e -> {
             remainingSteps = rollDieAndDisplayResult(); // Store the result of the die roll
+
             if (player1View == null) {
                 player1View = createPlayerView("player_pawn.png");
                 movePlayerTo(player1View, player1X, player1Y);
                 mapGrid.getChildren().add(player1View);
                 // Set player1Turn to true when player 1 becomes visible
                 player1Turn = true;
+
             } else if (player2View == null) {
                 player2View = createPlayerView("player_pawn2.png");
                 movePlayerTo(player2View, player2X, player2Y);
@@ -93,7 +95,7 @@ public class TSG extends Application {
                 // Set player1Turn to false after player 2 becomes visible
                 player1Turn = false;
             }
-            mapGrid.requestFocus(); // Ensure the map grid has focus for key events
+            mapGrid.requestFocus(); // Ensure the map grid has focus for input
         });
 
         populateWeaponsMarket();
@@ -106,7 +108,7 @@ public class TSG extends Application {
         root.getChildren().addAll(mapGrid, buttonBox);
 
         int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1;
-        int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra space for button
+        int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra screen space for button
         Scene scene = new Scene(root, sceneWidth, sceneHeight);
 
         scene.setOnKeyPressed(e -> {
@@ -116,8 +118,7 @@ public class TSG extends Application {
                 } else if (player2View != null) {
                     movePlayer(player2View, e.getCode());
                 }
-                checkForPlayerCollision(); // Call checkForPlayerCollision() after each move
-                remainingSteps--; // Decrement remaining steps after each move
+                checkForPlayerCollision(); // checkForPlayerCollision() after each move
             }
         });
 
@@ -126,7 +127,7 @@ public class TSG extends Application {
         stage.setScene(scene);
         stage.show();
     }
-    private int rollDieAndDisplayResult() {
+    private int rollDieAndDisplayResult() { //Display Die Result
         int rollResult = rollDie();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Die Roll Result");
@@ -135,23 +136,18 @@ public class TSG extends Application {
         alert.showAndWait();
         return rollResult;
     }
-    private int rollDie() {
+    private int rollDie() { //Die Roller
         // Simulate rolling a six-sided die
         return random.nextInt(6) + 1;
     }
-    private ImageView createPlayerView(String imagePath) {
+    private ImageView createPlayerView(String imagePath) { //Player view on the map
         ImageView playerView = new ImageView(new Image(imagePath));
         playerView.setFitWidth(CELL_SIZE);
         playerView.setFitHeight(CELL_SIZE);
         return playerView;
     }
-    private void movePlayer(ImageView playerView, KeyCode keyCode) {
-        if (remainingSteps <= 0) {
-            // Player has no remaining steps, return without moving
-            return;
-        }
+    private void movePlayer(ImageView playerView, KeyCode keyCode) { //Move input functions.
 
-        // Determine the player's current position
         int currentX = playerView == player1View ? player1X : player2X;
         int currentY = playerView == player1View ? player1Y : player2Y;
 
@@ -175,7 +171,7 @@ public class TSG extends Application {
                     if (isValidMove(newX, nextY)) {
                         newY = nextY;
                     } else {
-                        break; // Stop moving if the next position is invalid
+                        break;
                     }
                 }
                 break;
@@ -185,7 +181,7 @@ public class TSG extends Application {
                     if (isValidMove(nextX, newY)) {
                         newX = nextX;
                     } else {
-                        break; // Stop moving if the next position is invalid
+                        break;
                     }
                 }
                 break;
@@ -195,28 +191,32 @@ public class TSG extends Application {
                     if (isValidMove(nextX, newY)) {
                         newX = nextX;
                     } else {
-                        break; // Stop moving if the next position is invalid
+                        break;
                     }
                 }
                 break;
+            case ENTER:
+                if (player1Turn) {
+                    purchaseWeapon(player1View, "Player 1");
+                } else {
+                    purchaseWeapon(player2View, "Player 2");
+                }
+                break;
             default:
-                // If the key pressed is not an arrow key, do not move
                 return;
         }
-
         // Move the player to the new position and decrement the remaining steps
         movePlayerTo(playerView, newX, newY);
         remainingSteps = 0; // The remaining steps have been used up
     }
-    private boolean isValidMove(int x, int y) {
+    private boolean isValidMove(int x, int y) { // To block players from entering walls (black)
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
             return false;
         }
-
         Color cellColor = (Color) mapGridCells[x][y].getFill();
         return !cellColor.equals(Color.BLACK);
     }
-    private void sellItems(String playerName) {
+    private void sellItems(String playerName) { // Sell items method linked to the "move player to" method
         Map<String, Treasure> playerTreasures = playerName.equals("Player 1") ? player1Treasures : player2Treasures;
         int playerTreasureValue = playerName.equals("Player 1") ? player1TreasureValue : player2TreasureValue;
 
@@ -257,13 +257,14 @@ public class TSG extends Application {
         // Check if the player has stepped on a trap
         Color cellColor = (Color) mapGridCells[x][y].getFill();
         if (cellColor.equals(Color.RED)) {
+
             // Deduct 100 money from the corresponding player
             if (player1Turn) {
                 player1TreasureValue -= 100;
-                player1TreasureValue = Math.max(0, player1TreasureValue); // Ensure it doesn't go below 0
+                player1TreasureValue = Math.max(0, player1TreasureValue);
             } else {
                 player2TreasureValue -= 100;
-                player2TreasureValue = Math.max(0, player2TreasureValue); // Ensure it doesn't go below 0
+                player2TreasureValue = Math.max(0, player2TreasureValue);
             }
             // Notify the player about the deduction
             String playerName = player1Turn ? "Player 1" : "Player 2";
@@ -310,7 +311,8 @@ public class TSG extends Application {
         }
         player1Turn = !player1Turn;
     }
-    private void checkForPlayerCollision() {
+    private void checkForPlayerCollision() { //player battle mechanism
+
         if (player1X == player2X && player1Y == player2Y) {
             // Calculate the total strength of weapons for each player
             int player1Strength = player1Weapons.values().stream().mapToInt(Weapon::getStrength).sum();
@@ -328,6 +330,7 @@ public class TSG extends Application {
                 alert.setHeaderText(null);
                 alert.setContentText("Player 2 lost the battle!");
                 alert.showAndWait();
+
             } else if (player2Strength > player1Strength) {
                 // Player 2 wins
                 player1Weapons.values().forEach(weapon -> weapon.setStrength(0)); // Reset player 1's weapons
@@ -339,6 +342,7 @@ public class TSG extends Application {
                 alert.setHeaderText(null);
                 alert.setContentText("Player 1 lost the battle!");
                 alert.showAndWait();
+
             } else {
                 // It's a tie, determine the winner based on who entered the cell first
                 if (player1EnteredCell && !player2EnteredCell) {
@@ -349,17 +353,14 @@ public class TSG extends Application {
                     // Player 2 entered the cell first
                     player1Weapons.values().forEach(weapon -> weapon.setStrength(0)); // Reset player 1's weapons
                     movePlayerTo(player1View, 0, 0); // Reset losing player
-                } else {
-                    // Both players entered the cell simultaneously (or neither entered), no action needed
                 }
             }
         }
     }
-
     private void setMapElement(int x, int y, Color color) {
         mapGridCells[x][y].setFill(color);
     }
-    private void placeRandomElements(Rectangle[][] mapGridCells, int count, Color color) {
+    private void placeRandomElements(Rectangle[][] mapGridCells, int count, Color color) { //place my map components.
         List<Integer> availableIndices = getAvailableIndices(mapGridCells, color);
 
         for (int i = 0; i < count && !availableIndices.isEmpty(); i++) {
@@ -371,7 +372,7 @@ public class TSG extends Application {
         }
     }
 
-    private List<Integer> getAvailableIndices(Rectangle[][] mapGridCells, Color color) {
+    private List<Integer> getAvailableIndices(Rectangle[][] mapGridCells, Color color) {  // To make sure my elements don't overlap castle
         List<Integer> availableIndices = new ArrayList<>();
         for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
             int x = i % GRID_SIZE;
@@ -382,7 +383,7 @@ public class TSG extends Application {
         }
         return availableIndices;
     }
-    private void placeRandomTreasures(Rectangle[][] mapGridCells, int count) {
+    private void placeRandomTreasures(Rectangle[][] mapGridCells, int count) { //to place the 8 treasures on the map.
         List<Treasure> treasuresList = new ArrayList<>(Arrays.asList(treasures));
         Collections.shuffle(treasuresList);
 
@@ -405,8 +406,8 @@ public class TSG extends Application {
             mapGridCells[x][y].setFill(Color.GREEN);
         }
     }
-    private void populateWeaponsMarket() {
-        weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 0));
+    private void populateWeaponsMarket() { // Weapon list and price linked to market/purchase weapon
+        weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 100));
         weaponsMarket.put("Sword", new Weapon("Sword", 50, 450));
         weaponsMarket.put("Bow", new Weapon("Bow", 40, 350));
         weaponsMarket.put("Axe", new Weapon("Axe", 30, 250));
@@ -427,6 +428,7 @@ public class TSG extends Application {
         }
         Map<String, Weapon> playerWeapons = playerName.equals("Player 1") ? player1Weapons : player2Weapons;
         final int[] playerTreasureValue = {playerName.equals("Player 1") ? player1TreasureValue : player2TreasureValue};
+
         // Display the player's current money and available items for purchase
         StringBuilder weaponsList = new StringBuilder("Available Items:\n");
         for (String weaponName : weaponsMarket.keySet()) {
@@ -435,12 +437,15 @@ public class TSG extends Application {
         }
         weaponsList.append("\n").append(playerName).append("'s Current Money: ").append(playerTreasureValue[0]);
         TextInputDialog dialog = new TextInputDialog();
+
         dialog.setTitle("Purchase Weapon");
         dialog.setHeaderText(weaponsList.toString());
+
         dialog.setContentText("Enter the name of the item you want to purchase:");
         Optional<String> result = dialog.showAndWait();
+
         result.ifPresent(weaponName -> {
-            // Process purchase of other weapons
+            // Process to purchase of other weapons
             Weapon weapon = weaponsMarket.get(weaponName);
             if (weapon != null) {
                 if (playerTreasureValue[0] >= weapon.getPrice()) {
@@ -477,7 +482,7 @@ public class TSG extends Application {
             }
         });
     }
-    private void revealUndiscoveredTreasures() {
+    private void revealUndiscoveredTreasures() { //turn green cells to pink to reveal the treasure
         for (int i = 0; i < GRID_SIZE; i++) {
             for (int j = 0; j < GRID_SIZE; j++) {
                 Color cellColor = (Color) mapGridCells[i][j].getFill();
