@@ -10,4 +10,6 @@ module com.example.phase1 {
 
     opens com.example.phase1 to javafx.fxml;
     exports com.example.phase1;
+    exports com.example.phase1.Main;
+    opens com.example.phase1.Main to javafx.fxml;
 }
