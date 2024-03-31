@@ -126,7 +126,7 @@ public class TSG extends Application {
         initializeScoreboard();
         rootPane.setRight(scoreboard); // Scoreboard layout
 
-        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 150;
+        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 170;
         int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra screen space for button
         Scene scene = new Scene(rootPane, sceneWidth, sceneHeight);
 
@@ -151,12 +151,14 @@ public class TSG extends Application {
         // Create labels to display player information
         Label player1Label = new Label("Player 1");
         player1Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
+        player1Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15)); // Set font to Arial, bold, size 14
         player1MoneyLabel = new Label("Money: " + player1TreasureValue);
         player1WeaponLabel = new Label("Weapon: " + (player1Weapons.isEmpty() ? "None" : player1Weapons.keySet().toString()));
         player1StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player1Weapons));
 
         Label player2Label = new Label("Player 2");
         player2Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
+        player2Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15)); // Set font to Arial, bold, size 14
         player2MoneyLabel = new Label("Money: " + player2TreasureValue);
         player2WeaponLabel = new Label("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
         player2StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player2Weapons));
@@ -164,7 +166,7 @@ public class TSG extends Application {
         // Create a VBox to hold player information
         scoreboard = new VBox(10);
         Label scoreboardTitle = new Label("Scoreboard");
-        scoreboardTitle.setFont(Font.font("VERDANA", FontWeight.BOLD, 17)); // Set the font weight to bold
+        scoreboardTitle.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 20)); // Set the font weight to bold
         scoreboard.getChildren().addAll(
                 scoreboardTitle,
                 player1Label,
@@ -176,8 +178,7 @@ public class TSG extends Application {
                 player2WeaponLabel,
                 player2StrengthLabel
         );
-        //scoreboard.setAlignment(Pos.CENTER);
-        scoreboard.setPadding(new Insets(20));// Set padding to push the scoreboard away from the edge
+        scoreboard.setPadding(new Insets(20)); // Set padding to push the scoreboard away from the edge
     }
 
     private void updateScoreboard() {
