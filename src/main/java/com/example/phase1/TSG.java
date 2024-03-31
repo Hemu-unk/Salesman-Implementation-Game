@@ -1,19 +1,25 @@
 package com.example.phase1;
 
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
+import javafx.scene.effect.ColorAdjust;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import java.util.*;
 
@@ -24,14 +30,21 @@ public class TSG extends Application {
     private int player1X = 0; //player pos x
     private int player1Y = 0; //player pos y
     private ImageView player2View;
-    private int player2X = 0; //player2 pos x
-    private int player2Y = 0; //player2 pos y
+    private int player2X = 8; //player2 pos x
+    private int player2Y = 8; //player2 pos y
     private boolean player1Turn = true;
     private final Rectangle[][] mapGridCells = new Rectangle[GRID_SIZE][GRID_SIZE];
     private final Map<String, Treasure> player1Treasures = new HashMap<>();
     private final Map<String, Treasure> player2Treasures = new HashMap<>();
     private final Random random = new Random();
     private int remainingSteps = 0;
+    private VBox scoreboard;
+    private Label player1MoneyLabel;
+    private Label player1WeaponLabel;
+    private Label player2MoneyLabel;
+    private Label player2WeaponLabel;
+    private Label player1StrengthLabel;
+    private Label player2StrengthLabel;
     private static final Treasure[] treasures = {
             new Treasure("Diamond Ring", 100),
             new Treasure("Jewel-encrusted Sword", 150),
@@ -70,7 +83,7 @@ public class TSG extends Application {
         placeRandomElements(mapGridCells, 15, Color.BLACK);
         placeRandomElements(mapGridCells, 5, Color.ORANGE);
         placeRandomElements(mapGridCells, 6, Color.RED);
-        placeRandomElements(mapGridCells, 4, Color.BLUE);
+        placeRandomElements(mapGridCells, 6, Color.BLUE);
         placeRandomTreasures(mapGridCells, 8);
 
         rollButton = new Button("Roll Die");
@@ -92,6 +105,7 @@ public class TSG extends Application {
                 player1Turn = false;
             }
             mapGrid.requestFocus(); // Ensure the map grid has focus for input
+            updateScoreboard(); // Update the scoreboard after each roll
         });
 
         populateWeaponsMarket();
@@ -103,9 +117,16 @@ public class TSG extends Application {
         VBox root = new VBox(10);
         root.getChildren().addAll(mapGrid, buttonBox);
 
-        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1;
+        BorderPane rootPane = new BorderPane();
+        rootPane.setLeft(root); // Your game layout
+
+        // Initialize and add the scoreboard to the right
+        initializeScoreboard();
+        rootPane.setRight(scoreboard); // Scoreboard layout
+
+        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 150;
         int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra screen space for button
-        Scene scene = new Scene(root, sceneWidth, sceneHeight);
+        Scene scene = new Scene(rootPane, sceneWidth, sceneHeight);
 
         scene.setOnKeyPressed(e -> {
             if (remainingSteps > 0) {
@@ -115,6 +136,7 @@ public class TSG extends Application {
                     movePlayer(player2View, e.getCode());
                 }
                 checkForPlayerCollision(); // checkForPlayerCollision() after each move
+                updateScoreboard(); // Update the scoreboard after each move
             }
         });
 
@@ -123,6 +145,58 @@ public class TSG extends Application {
         stage.setScene(scene);
         stage.show();
     }
+    private void initializeScoreboard() {
+        // Create labels to display player information
+        Label player1Label = new Label("Player 1");
+        player1Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
+        player1MoneyLabel = new Label("Money: " + player1TreasureValue);
+        player1WeaponLabel = new Label("Weapon: " + (player1Weapons.isEmpty() ? "None" : player1Weapons.keySet().toString()));
+        player1StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player1Weapons));
+
+        Label player2Label = new Label("Player 2");
+        player2Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
+        player2MoneyLabel = new Label("Money: " + player2TreasureValue);
+        player2WeaponLabel = new Label("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
+        player2StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player2Weapons));
+
+        // Create a VBox to hold player information
+        scoreboard = new VBox(10);
+        Label scoreboardTitle = new Label("Scoreboard");
+        scoreboardTitle.setFont(Font.font("VERDANA", FontWeight.BOLD, 17)); // Set the font weight to bold
+        scoreboard.getChildren().addAll(
+                scoreboardTitle,
+                player1Label,
+                player1MoneyLabel,
+                player1WeaponLabel,
+                player1StrengthLabel,
+                player2Label,
+                player2MoneyLabel,
+                player2WeaponLabel,
+                player2StrengthLabel
+        );
+        //scoreboard.setAlignment(Pos.CENTER);
+        scoreboard.setPadding(new Insets(20));// Set padding to push the scoreboard away from the edge
+    }
+
+    private void updateScoreboard() {
+        // Update player 1 information
+        player1MoneyLabel.setText("Money: " + player1TreasureValue);
+        player1WeaponLabel.setText("Weapon: " + (player1Weapons.isEmpty() ? "None" : player1Weapons.keySet().toString()));
+        player1StrengthLabel.setText("Strength: " + calculatePlayerStrength(player1Weapons));
+
+        // Update player 2 information
+        player2MoneyLabel.setText("Money: " + player2TreasureValue);
+        player2WeaponLabel.setText("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
+        player2StrengthLabel.setText("Strength: " + calculatePlayerStrength(player2Weapons));
+    }
+    private int calculatePlayerStrength(Map<String, Weapon> playerWeapons) {
+        int strength = 0;
+        for (Weapon weapon : playerWeapons.values()) {
+            strength += weapon.getStrength();
+        }
+        return strength;
+    }
+
     private int rollDieAndDisplayResult() { //Display Die Result
         int rollResult = rollDie();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -134,7 +208,7 @@ public class TSG extends Application {
     }
     private int rollDie() { //Die Roller
         // Simulate rolling a six-sided die
-        return random.nextInt(6) + 1;
+        return random.nextInt(3) + 1;
     }
     private ImageView createPlayerView(String imagePath) { //Player view on the map
         ImageView playerView = new ImageView(new Image(imagePath));
@@ -142,10 +216,13 @@ public class TSG extends Application {
         playerView.setFitHeight(CELL_SIZE);
         return playerView;
     }
-    private void movePlayer(ImageView playerView, KeyCode keyCode) { //Move input functions.
-
+    private void movePlayer(ImageView playerView, KeyCode keyCode) { // Move input functions.
         int currentX = playerView == player1View ? player1X : player2X;
         int currentY = playerView == player1View ? player1Y : player2Y;
+
+        // Store the initial position to start coloring from
+        int startX = currentX;
+        int startY = currentY;
 
         // Calculate the new position based on the key press and remaining steps
         int newX = currentX;
@@ -201,16 +278,66 @@ public class TSG extends Application {
             default:
                 return;
         }
-        // Move the player to the new position and decrement the remaining steps
+        double hue = 20.0;
+        colorPath(startX, startY, newX, newY, hue);
+
         movePlayerTo(playerView, newX, newY);
-        remainingSteps = 0; // The remaining steps have been used up
+        remainingSteps = 0;
     }
-    private boolean isValidMove(int x, int y) { // To block players from entering walls (black)
+
+    private void colorPath(int startX, int startY, int endX, int endY, double hue) {
+        ColorAdjust colorAdjust = new ColorAdjust();
+        colorAdjust.setHue(hue);
+
+        // Color the previous cell (starting position) if it's not the same as the current cell
+        if (startX != endX || startY != endY) {
+            if (!isMapComponent(startX, startY)) {
+                mapGridCells[startX][startY].setEffect(colorAdjust);
+            }
+        }
+
+        // Determine the direction of movement
+        int deltaX = endX - startX;
+        int deltaY = endY - startY;
+
+        // Color the path between the previous position and the current position
+        if (deltaX != 0) {
+            // Player moved horizontally
+            int signX = Integer.signum(deltaX);
+            for (int x = startX + signX; x != endX; x += signX) {
+                if (!isMapComponent(x, startY)) { // Check if the cell is a map component
+                    mapGridCells[x][startY].setEffect(colorAdjust);
+                }
+            }
+        } else if (deltaY != 0) {
+            // Player moved vertically
+            int signY = Integer.signum(deltaY);
+            for (int y = startY + signY; y != endY; y += signY) {
+                if (!isMapComponent(startX, y)) { // Check if the cell is a map component
+                    mapGridCells[startX][y].setEffect(colorAdjust);
+                }
+            }
+        }
+
+        // Uncolor the cell the player just moved to
+        mapGridCells[endX][endY].setEffect(null);
+    }
+    private boolean isMapComponent(int x, int y) {
+        // Check if the cell is a map component (wall or other elements)
+        Color cellColor = (Color) mapGridCells[x][y].getFill();
+        return cellColor.equals(Color.YELLOW)
+                || cellColor.equals(Color.BLACK)
+                || cellColor.equals(Color.ORANGE)
+                || cellColor.equals(Color.RED)
+                || cellColor.equals(Color.BLUE)
+                || cellColor.equals(Color.GREEN);
+    }
+    private boolean isValidMove(int x, int y) { // To block players from entering walls (black) and other color
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
             return false;
         }
         Color cellColor = (Color) mapGridCells[x][y].getFill();
-        return !cellColor.equals(Color.BLACK);
+        return !cellColor.equals(Color.BLACK) && !cellColor.equals(Color.CYAN);
     }
     private void sellItems(String playerName) { // Sell items method linked to the "move player to" method
         Map<String, Treasure> playerTreasures = playerName.equals("Player 1") ? player1Treasures : player2Treasures;
@@ -404,9 +531,9 @@ public class TSG extends Application {
     }
     private void populateWeaponsMarket() { // Weapon list and price linked to market/purchase weapon
         weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 100));
-        weaponsMarket.put("Sword", new Weapon("Sword", 50, 450));
-        weaponsMarket.put("Bow", new Weapon("Bow", 40, 350));
-        weaponsMarket.put("Axe", new Weapon("Axe", 30, 250));
+        weaponsMarket.put("Sword", new Weapon("Sword", 50, 0));
+        weaponsMarket.put("Bow", new Weapon("Bow", 40, 0));
+        weaponsMarket.put("Axe", new Weapon("Axe", 30, 0));
     }
     private void purchaseWeapon(ImageView playerView, String playerName) {
         // Check if the player is on an orange cell
