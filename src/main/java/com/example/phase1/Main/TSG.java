@@ -47,6 +47,8 @@ public class TSG extends Application {
     private Label player2WeaponLabel;
     private Label player1StrengthLabel;
     private Label player2StrengthLabel;
+    private Label player1TreasureLabel;
+    private Label player2TreasureLabel;
     private static final Treasure[] treasures = {
             new Treasure("Diamond Ring", 100),
             new Treasure("Jewel-encrusted Sword", 150),
@@ -82,7 +84,7 @@ public class TSG extends Application {
             }
         }
         setMapElement(GRID_SIZE / 2, GRID_SIZE / 2, Color.YELLOW);
-        placeRandomElements(mapGridCells, 10, Color.BLACK);
+        placeRandomElements(mapGridCells, 15, Color.BLACK);
         placeRandomElements(mapGridCells, 5, Color.ORANGE);
         placeRandomElements(mapGridCells, 6, Color.RED);
         placeRandomElements(mapGridCells, 6, Color.BLUE);
@@ -126,7 +128,7 @@ public class TSG extends Application {
         initializeScoreboard();
         rootPane.setRight(scoreboard); // Scoreboard layout
 
-        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 170;
+        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 150;
         int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra screen space for button
         Scene scene = new Scene(rootPane, sceneWidth, sceneHeight);
 
@@ -151,34 +153,37 @@ public class TSG extends Application {
         // Create labels to display player information
         Label player1Label = new Label("Player 1");
         player1Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
-        player1Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15)); // Set font to Arial, bold, size 14
         player1MoneyLabel = new Label("Money: " + player1TreasureValue);
         player1WeaponLabel = new Label("Weapon: " + (player1Weapons.isEmpty() ? "None" : player1Weapons.keySet().toString()));
         player1StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player1Weapons));
+        player1TreasureLabel = new Label("Treasure Collected: " + player1Treasures.size()); // Display treasure collected
 
         Label player2Label = new Label("Player 2");
         player2Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
-        player2Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15)); // Set font to Arial, bold, size 14
         player2MoneyLabel = new Label("Money: " + player2TreasureValue);
         player2WeaponLabel = new Label("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
         player2StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player2Weapons));
+        player2TreasureLabel = new Label("Treasure Collected: " + player2Treasures.size()); // Display treasure collected
 
         // Create a VBox to hold player information
         scoreboard = new VBox(10);
         Label scoreboardTitle = new Label("Scoreboard");
-        scoreboardTitle.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 20)); // Set the font weight to bold
+        scoreboardTitle.setFont(Font.font("VERDANA", FontWeight.BOLD, 17)); // Set the font weight to bold
         scoreboard.getChildren().addAll(
                 scoreboardTitle,
                 player1Label,
                 player1MoneyLabel,
                 player1WeaponLabel,
                 player1StrengthLabel,
+                player1TreasureLabel,
                 player2Label,
                 player2MoneyLabel,
                 player2WeaponLabel,
-                player2StrengthLabel
+                player2StrengthLabel,
+                player2TreasureLabel
         );
-        scoreboard.setPadding(new Insets(20)); // Set padding to push the scoreboard away from the edge
+        //scoreboard.setAlignment(Pos.CENTER);
+        scoreboard.setPadding(new Insets(20));// Set padding to push the scoreboard away from the edge
     }
 
     private void updateScoreboard() {
@@ -186,11 +191,13 @@ public class TSG extends Application {
         player1MoneyLabel.setText("Money: " + player1TreasureValue);
         player1WeaponLabel.setText("Weapon: " + (player1Weapons.isEmpty() ? "None" : player1Weapons.keySet().toString()));
         player1StrengthLabel.setText("Strength: " + calculatePlayerStrength(player1Weapons));
+        player1TreasureLabel.setText("Treasure Collected: " + player1Treasures.size());
 
         // Update player 2 information
         player2MoneyLabel.setText("Money: " + player2TreasureValue);
         player2WeaponLabel.setText("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
         player2StrengthLabel.setText("Strength: " + calculatePlayerStrength(player2Weapons));
+        player2TreasureLabel.setText("Treasure Collected: " + player2Treasures.size());
     }
     private int calculatePlayerStrength(Map<String, Weapon> playerWeapons) {
         int strength = 0;
@@ -400,7 +407,26 @@ public class TSG extends Application {
             alert.setContentText(playerName + " stepped on a trap! 100 gold coins have been deducted.");
             alert.showAndWait();
         }
+        // Check if the player is on a blue cell
+        else if (cellColor.equals(Color.BLUE)) {
+            // Generate a random currency value between 100 and 300
+            int gainedMoney = random.nextInt(101) + 100; // 100 to 300 inclusive
 
+            // Update the player's money
+            if (player1Turn) {
+                player1TreasureValue += gainedMoney;
+            } else {
+                player2TreasureValue += gainedMoney;
+            }
+            mapGridCells[x][y].setFill(Color.LIGHTSLATEGRAY);
+
+            // Inform the player about the gained money
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Currency Found");
+            alert.setHeaderText(null);
+            alert.setContentText("You found " + gainedMoney + " gold coins!");
+            alert.showAndWait();
+        }
         // Check if the player has found a treasure
         else if (cellColor.equals(Color.GREEN)) {
             Treasure treasure = (Treasure) mapGridCells[x][y].getUserData();
@@ -534,9 +560,9 @@ public class TSG extends Application {
     }
     private void populateWeaponsMarket() { // Weapon list and price linked to market/purchase weapon
         weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 100));
-        weaponsMarket.put("Sword", new Weapon("Sword", 50, 0));
-        weaponsMarket.put("Bow", new Weapon("Bow", 40, 0));
-        weaponsMarket.put("Axe", new Weapon("Axe", 30, 0));
+        weaponsMarket.put("Sword", new Weapon("Sword", 50, 300));
+        weaponsMarket.put("Bow", new Weapon("Bow", 40, 200));
+        weaponsMarket.put("Axe", new Weapon("Axe", 30, 100));
     }
     private void purchaseWeapon(ImageView playerView, String playerName) {
         // Check if the player is on an orange cell
