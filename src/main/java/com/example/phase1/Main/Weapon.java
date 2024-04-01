@@ -1,4 +1,4 @@
-package com.example.phase1.Weapon;
+package com.example.phase1.Main;
 
 public class Weapon {
     private final String name;
@@ -13,18 +13,23 @@ public class Weapon {
     }
 
     public String getName() {
+
         return name;
     }
 
     public int getStrength() {
+
         return strength;
     }
 
     public void setStrength(int strength) { // Add setter method for strength
+
         this.strength = strength;
     }
 
     public int getPrice() {
+
         return price;
     }
+
 }

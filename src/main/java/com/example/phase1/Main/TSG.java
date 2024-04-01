@@ -1,7 +1,5 @@
 package com.example.phase1.Main;
 
-import com.example.phase1.Treasure.Treasure;
-import com.example.phase1.Weapon.Weapon;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -185,6 +183,44 @@ public class TSG extends Application {
         Label gameInstructions3 = new Label("• Objective Is To Collect The Most Treasure");
         Label gameInstructions4 = new Label("• Avoid Traps And Strategize To Win!");
 
+        // Add a label for the legend
+        Label legendLabel = new Label("Legend");
+        legendLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
+
+        // Create colored boxes to represent map components along with text labels
+        VBox legendBox = new VBox(5);
+
+        HBox pair1 = new HBox(10);
+        Rectangle box1 = new Rectangle(20, 20, Color.YELLOW);
+        Label label1 = new Label("Castle");
+        pair1.getChildren().addAll(box1, label1);
+
+        HBox pair2 = new HBox(10);
+        Rectangle box2 = new Rectangle(20, 20, Color.GREEN);
+        Label label2 = new Label("Treasure");
+        pair2.getChildren().addAll(box2, label2);
+
+        HBox pair3 = new HBox(10);
+        Rectangle box3 = new Rectangle(20, 20, Color.BLACK);
+        Label label3 = new Label("Wall");
+        pair3.getChildren().addAll(box3, label3);
+
+        HBox pair4 = new HBox(10);
+        Rectangle box4 = new Rectangle(20, 20, Color.ORANGE);
+        Label label4 = new Label("Market");
+        pair4.getChildren().addAll(box4, label4);
+
+        HBox pair5 = new HBox(10);
+        Rectangle box5 = new Rectangle(20, 20, Color.BLUE);
+        Label label5 = new Label("Lost Item");
+        pair5.getChildren().addAll(box5, label5);
+
+        HBox pair6 = new HBox(10);
+        Rectangle box6 = new Rectangle(20, 20, Color.RED);
+        Label label6 = new Label("Trap");
+        pair6.getChildren().addAll(box6, label6);
+
+        legendBox.getChildren().addAll(pair1, pair2, pair3, pair4, pair5, pair6);
 // Create a VBox to hold player information and instructions
         scoreboard = new VBox(10);
         Label scoreboardTitle = new Label("Scoreboard");
@@ -202,12 +238,14 @@ public class TSG extends Application {
                 player2StrengthLabel,
                 player2TreasureLabel,
                 turnLabel,
-                currentPlayerImageView, // Add the ImageView to display the current player's turn
-                instructions, // Add instructions label
-                gameInstructions1, // Add detailed game instructions with bullet points
+                currentPlayerImageView,
+                instructions,
+                gameInstructions1,
                 gameInstructions2,
                 gameInstructions3,
-                gameInstructions4
+                gameInstructions4,
+                legendLabel,
+                legendBox
         );
         //scoreboard.setAlignment(Pos.CENTER);
         scoreboard.setPadding(new Insets(10));// Set padding to push the scoreboard away from the edge
@@ -254,7 +292,7 @@ public class TSG extends Application {
     }
     private int rollDie() { //Die Roller
         // Simulate rolling a six-sided die
-        return random.nextInt(1) + 1;
+        return random.nextInt(3) + 1;
     }
     private ImageView createPlayerView(String imagePath) { //Player view on the map
         ImageView playerView = new ImageView(new Image(imagePath));
@@ -324,15 +362,15 @@ public class TSG extends Application {
             default:
                 return;
         }
-        colorPath(startX, startY, newX, newY, 90.0);
+        colorPath(startX, startY, newX, newY,10);
 
         movePlayerTo(playerView, newX, newY);
         remainingSteps = 0;
     }
 
-    private void colorPath(int startX, int startY, int endX, int endY, double hue) {
+    private void colorPath(int startX, int startY, int endX, int endY, double saturation) {
         ColorAdjust colorAdjust = new ColorAdjust();
-        colorAdjust.setHue(hue);
+        colorAdjust.setSaturation(0.5); // Adjusted saturation value for increased vibrancy
 
         // Color the previous cell (starting position) if it's not the same as the current cell
         if (startX != endX || startY != endY) {
