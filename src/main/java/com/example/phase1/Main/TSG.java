@@ -66,6 +66,9 @@ public class TSG extends Application {
     private boolean player1EnteredCell = false;
     private boolean player2EnteredCell = false;
     private Button rollButton;
+    private int player1TreasuresFound = 0;
+    private int player2TreasuresFound = 0;
+    private boolean gameEnded = false;
     @Override
     public void start(Stage stage) {
         GridPane mapGrid = new GridPane();
@@ -292,7 +295,7 @@ public class TSG extends Application {
     }
     private int rollDie() { //Die Roller
         // Simulate rolling a six-sided die
-        return random.nextInt(3) + 1;
+        return random.nextInt(1) + 1;
     }
     private ImageView createPlayerView(String imagePath) { //Player view on the map
         ImageView playerView = new ImageView(new Image(imagePath));
@@ -362,13 +365,13 @@ public class TSG extends Application {
             default:
                 return;
         }
-        colorPath(startX, startY, newX, newY,10);
+        colorPath(startX, startY, newX, newY);
 
         movePlayerTo(playerView, newX, newY);
         remainingSteps = 0;
     }
 
-    private void colorPath(int startX, int startY, int endX, int endY, double saturation) {
+    private void colorPath(int startX, int startY, int endX, int endY) {
         ColorAdjust colorAdjust = new ColorAdjust();
         colorAdjust.setSaturation(0.5); // Adjusted saturation value for increased vibrancy
 
@@ -507,7 +510,6 @@ public class TSG extends Application {
             alert.setContentText("You found " + gainedMoney + " gold coins!");
             alert.showAndWait();
         }
-        // Check if the player has found a treasure
         else if (cellColor.equals(Color.GREEN)) {
             Treasure treasure = (Treasure) mapGridCells[x][y].getUserData();
             if (treasure != null) {
@@ -518,6 +520,20 @@ public class TSG extends Application {
                 alert.setHeaderText(null);
                 alert.setContentText(message);
                 alert.showAndWait();
+                // Increment the treasure count for the respective player
+                if (player1Turn) {
+                    player1TreasuresFound++;
+                } else {
+                    player2TreasuresFound++;
+                }
+                // Update the scoreboard
+                updateScoreboard();
+                // Check if a player has found 5 treasures
+                if (player1TreasuresFound >= 5 || player2TreasuresFound >= 5) {
+                    determineWinner();
+                } else if (player1TreasuresFound + player2TreasuresFound == 8) {
+                    determineWinner();
+                }
                 // Add the treasure to the player's inventory
                 if (player1Turn) {
                     // Add treasure to player 1's inventory (no immediate money update)
@@ -531,6 +547,7 @@ public class TSG extends Application {
                 mapGridCells[x][y].setFill(Color.LIGHTSLATEGRAY);
             }
         }
+
         // Check if the player is on the castle (yellow cell)
         else if (cellColor.equals(Color.YELLOW)) {
             if (player1Turn) {
@@ -543,6 +560,22 @@ public class TSG extends Application {
         }
         player1Turn = !player1Turn;
     }
+    private void determineWinner() {
+        String winner;
+        if (player1TreasuresFound > player2TreasuresFound) {
+            winner = "Player 1";
+        } else if (player2TreasuresFound > player1TreasuresFound) {
+            winner = "Player 2";
+        } else {
+            winner = "It's a tie!";
+        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Over");
+        alert.setHeaderText(null);
+        alert.setContentText("Game Over! " + winner + " wins with " + Math.max(player1TreasuresFound, player2TreasuresFound) + " treasures!");
+        alert.showAndWait();
+    }
+
     private void checkForPlayerCollision() { //player battle mechanism
 
         if (player1X == player2X && player1Y == player2Y) {
