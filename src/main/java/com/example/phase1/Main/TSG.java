@@ -49,6 +49,7 @@ public class TSG extends Application {
     private Label player2StrengthLabel;
     private Label player1TreasureLabel;
     private Label player2TreasureLabel;
+    private ImageView currentPlayerImageView;
     private static final Treasure[] treasures = {
             new Treasure("Diamond Ring", 100),
             new Treasure("Jewel-encrusted Sword", 150),
@@ -128,7 +129,7 @@ public class TSG extends Application {
         initializeScoreboard();
         rootPane.setRight(scoreboard); // Scoreboard layout
 
-        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 170;
+        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 260;
         int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra screen space for button
         Scene scene = new Scene(rootPane, sceneWidth, sceneHeight);
 
@@ -167,7 +168,24 @@ public class TSG extends Application {
         player2StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player2Weapons));
         player2TreasureLabel = new Label("Treasure Collected: " + player2Treasures.size()); // Display treasure collected
 
-        // Create a VBox to hold player information
+        // Add label to indicate turn
+        Label turnLabel = new Label("Player's Turn");
+        turnLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
+
+        // Create an ImageView to display the image indicating the current player's turn
+        currentPlayerImageView = new ImageView();
+        currentPlayerImageView.setFitHeight(20);
+        currentPlayerImageView.setFitWidth(20);
+
+        // Create instructions for the game with bullet points
+        Label instructions = new Label("Instructions:");
+        instructions.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
+        Label gameInstructions1 = new Label("\u2022 Arrow Keys To Move.");
+        Label gameInstructions2 = new Label("\u2022 Press 'Enter' To Access Markets.");
+        Label gameInstructions3 = new Label("\u2022 Objective Is To Collect The Most Treasure");
+        Label gameInstructions4 = new Label("\u2022 Avoid Traps And Strategize To Win!");
+
+// Create a VBox to hold player information and instructions
         scoreboard = new VBox(10);
         Label scoreboardTitle = new Label("Scoreboard");
         scoreboardTitle.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 20)); // Set the font weight to bold
@@ -182,10 +200,17 @@ public class TSG extends Application {
                 player2MoneyLabel,
                 player2WeaponLabel,
                 player2StrengthLabel,
-                player2TreasureLabel
+                player2TreasureLabel,
+                turnLabel,
+                currentPlayerImageView, // Add the ImageView to display the current player's turn
+                instructions, // Add instructions label
+                gameInstructions1, // Add detailed game instructions with bullet points
+                gameInstructions2,
+                gameInstructions3,
+                gameInstructions4
         );
         //scoreboard.setAlignment(Pos.CENTER);
-        scoreboard.setPadding(new Insets(20));// Set padding to push the scoreboard away from the edge
+        scoreboard.setPadding(new Insets(10));// Set padding to push the scoreboard away from the edge
     }
 
     private void updateScoreboard() {
@@ -200,6 +225,15 @@ public class TSG extends Application {
         player2WeaponLabel.setText("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
         player2StrengthLabel.setText("Strength: " + calculatePlayerStrength(player2Weapons));
         player2TreasureLabel.setText("Treasure Collected: " + player2Treasures.size());
+
+        // Update the current player's turn indicator
+        if (player1Turn) {
+            currentPlayerImageView.setImage(new Image("player_pawn.png")); // Set image for Player 1's turn
+        } else {
+            currentPlayerImageView.setImage(new Image("player_pawn2.png")); // Set image for Player 2's turn
+        }
+        currentPlayerImageView.setFitWidth(100); // Set the width of the image
+        currentPlayerImageView.setFitHeight(100); // Set the height of the image
     }
     private int calculatePlayerStrength(Map<String, Weapon> playerWeapons) {
         int strength = 0;
