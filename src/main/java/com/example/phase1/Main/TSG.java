@@ -84,9 +84,9 @@ public class TSG extends Application {
             }
         }
         setMapElement(GRID_SIZE / 2, GRID_SIZE / 2, Color.YELLOW);
-        placeRandomElements(mapGridCells, 15, Color.BLACK);
-        placeRandomElements(mapGridCells, 5, Color.ORANGE);
-        placeRandomElements(mapGridCells, 6, Color.RED);
+        placeRandomElements(mapGridCells, 10, Color.BLACK);
+        placeRandomElements(mapGridCells, 6, Color.ORANGE);
+        placeRandomElements(mapGridCells, 7, Color.RED);
         placeRandomElements(mapGridCells, 6, Color.BLUE);
         placeRandomTreasures(mapGridCells, 8);
 
@@ -128,7 +128,7 @@ public class TSG extends Application {
         initializeScoreboard();
         rootPane.setRight(scoreboard); // Scoreboard layout
 
-        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 150;
+        int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 170;
         int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra screen space for button
         Scene scene = new Scene(rootPane, sceneWidth, sceneHeight);
 
@@ -153,6 +153,7 @@ public class TSG extends Application {
         // Create labels to display player information
         Label player1Label = new Label("Player 1");
         player1Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
+        player1Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15)); // Set font for Player 1 label
         player1MoneyLabel = new Label("Money: " + player1TreasureValue);
         player1WeaponLabel = new Label("Weapon: " + (player1Weapons.isEmpty() ? "None" : player1Weapons.keySet().toString()));
         player1StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player1Weapons));
@@ -160,6 +161,7 @@ public class TSG extends Application {
 
         Label player2Label = new Label("Player 2");
         player2Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
+        player2Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15)); // Set font for Player 2 label
         player2MoneyLabel = new Label("Money: " + player2TreasureValue);
         player2WeaponLabel = new Label("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
         player2StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player2Weapons));
@@ -168,7 +170,7 @@ public class TSG extends Application {
         // Create a VBox to hold player information
         scoreboard = new VBox(10);
         Label scoreboardTitle = new Label("Scoreboard");
-        scoreboardTitle.setFont(Font.font("VERDANA", FontWeight.BOLD, 17)); // Set the font weight to bold
+        scoreboardTitle.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 20)); // Set the font weight to bold
         scoreboard.getChildren().addAll(
                 scoreboardTitle,
                 player1Label,
@@ -218,7 +220,7 @@ public class TSG extends Application {
     }
     private int rollDie() { //Die Roller
         // Simulate rolling a six-sided die
-        return random.nextInt(3) + 1;
+        return random.nextInt(1) + 1;
     }
     private ImageView createPlayerView(String imagePath) { //Player view on the map
         ImageView playerView = new ImageView(new Image(imagePath));
@@ -288,8 +290,7 @@ public class TSG extends Application {
             default:
                 return;
         }
-        double hue = 20.0;
-        colorPath(startX, startY, newX, newY, hue);
+        colorPath(startX, startY, newX, newY, 90.0);
 
         movePlayerTo(playerView, newX, newY);
         remainingSteps = 0;
@@ -342,12 +343,19 @@ public class TSG extends Application {
                 || cellColor.equals(Color.BLUE)
                 || cellColor.equals(Color.GREEN);
     }
-    private boolean isValidMove(int x, int y) { // To block players from entering walls (black) and other color
+    private boolean isValidMove(int x, int y) {
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
             return false;
         }
         Color cellColor = (Color) mapGridCells[x][y].getFill();
-        return !cellColor.equals(Color.BLACK) && !cellColor.equals(Color.CYAN);
+        if (cellColor.equals(Color.BLACK) || cellColor.equals(Color.CYAN)) {
+            return false; // Prevent entering black or cyan cells
+        }
+        // Check if any cell along the path has a hued effect
+        if (mapGridCells[x][y].getEffect() instanceof ColorAdjust) { //Empty Houses
+            return false;
+        }
+        return true;
     }
     private void sellItems(String playerName) { // Sell items method linked to the "move player to" method
         Map<String, Treasure> playerTreasures = playerName.equals("Player 1") ? player1Treasures : player2Treasures;
@@ -559,10 +567,10 @@ public class TSG extends Application {
         }
     }
     private void populateWeaponsMarket() { // Weapon list and price linked to market/purchase weapon
-        weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 100));
-        weaponsMarket.put("Sword", new Weapon("Sword", 50, 300));
-        weaponsMarket.put("Bow", new Weapon("Bow", 40, 200));
-        weaponsMarket.put("Axe", new Weapon("Axe", 30, 100));
+        weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 0));
+        weaponsMarket.put("Sword", new Weapon("Sword", 50, 0));
+        weaponsMarket.put("Bow", new Weapon("Bow", 40, 0));
+        weaponsMarket.put("Axe", new Weapon("Axe", 30, 0));
     }
     private void purchaseWeapon(ImageView playerView, String playerName) {
         // Check if the player is on an orange cell
