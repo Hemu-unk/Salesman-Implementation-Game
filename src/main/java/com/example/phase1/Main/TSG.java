@@ -180,10 +180,10 @@ public class TSG extends Application {
         // Create instructions for the game with bullet points
         Label instructions = new Label("Instructions:");
         instructions.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
-        Label gameInstructions1 = new Label("\u2022 Arrow Keys To Move.");
-        Label gameInstructions2 = new Label("\u2022 Press 'Enter' To Access Markets.");
-        Label gameInstructions3 = new Label("\u2022 Objective Is To Collect The Most Treasure");
-        Label gameInstructions4 = new Label("\u2022 Avoid Traps And Strategize To Win!");
+        Label gameInstructions1 = new Label("• Arrow Keys To Move.");
+        Label gameInstructions2 = new Label("• Press 'Enter' To Access Markets.");
+        Label gameInstructions3 = new Label("• Objective Is To Collect The Most Treasure");
+        Label gameInstructions4 = new Label("• Avoid Traps And Strategize To Win!");
 
 // Create a VBox to hold player information and instructions
         scoreboard = new VBox(10);
