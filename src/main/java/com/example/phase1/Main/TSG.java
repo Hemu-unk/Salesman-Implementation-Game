@@ -24,8 +24,8 @@ import javafx.stage.Stage;
 import java.util.*;
 
 public class TSG extends Application {
-    private static final int GRID_SIZE = 9;
-    private static final int CELL_SIZE = 90;
+    private static final int GRID_SIZE =9;
+    private static final int CELL_SIZE =90;
     private ImageView player1View;
     private int player1X = 0; //player pos x
     private int player1Y = 0; //player pos y
@@ -419,9 +419,11 @@ public class TSG extends Application {
                 || cellColor.equals(Color.GREEN);
     }
     private boolean isValidMove(int x, int y) {
+        // Check if the move is within the bounds of the map
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
-            return false;
+            return true; // Return true to indicate that the move is valid but out of bounds
         }
+
         Color cellColor = (Color) mapGridCells[x][y].getFill();
         if (cellColor.equals(Color.BLACK) || cellColor.equals(Color.CYAN)) {
             return false; // Prevent entering black or cyan cells
