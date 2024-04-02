@@ -321,7 +321,7 @@ public class TSG extends Application {
     }
     private int rollDie() { //Die Roller
         // Simulate rolling a six-sided die
-        return random.nextInt(1) + 1;
+        return random.nextInt(3) + 1;
     }
     private ImageView createPlayerView(String imagePath) { //Player view on the map
         ImageView playerView = new ImageView(new Image(imagePath));
