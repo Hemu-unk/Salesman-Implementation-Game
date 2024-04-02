@@ -373,7 +373,7 @@ public class TSG extends Application {
 
     private void colorPath(int startX, int startY, int endX, int endY) {
         ColorAdjust colorAdjust = new ColorAdjust();
-        colorAdjust.setSaturation(0.5); // Adjusted saturation value for increased vibrancy
+        colorAdjust.setHue(0.5); // Adjusted hue
 
         // Color the previous cell (starting position) if it's not the same as the current cell
         if (startX != endX || startY != endY) {
