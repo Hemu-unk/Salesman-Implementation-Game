@@ -86,7 +86,7 @@ public class TSG extends Application {
             }
         }
         setMapElement(GRID_SIZE / 2, GRID_SIZE / 2, Color.YELLOW);
-        placeRandomElements(mapGridCells, 10, Color.BLACK);
+        placeRandomElements(mapGridCells, 12, Color.BLACK);
         placeRandomElements(mapGridCells, 6, Color.ORANGE);
         placeRandomElements(mapGridCells, 7, Color.RED);
         placeRandomElements(mapGridCells, 6, Color.BLUE);
@@ -97,14 +97,14 @@ public class TSG extends Application {
             remainingSteps = rollDieAndDisplayResult(); // Store the result of the die roll
 
             if (player1View == null) {
-                player1View = createPlayerView("player_pawn.png");
+                player1View = createPlayerView("player_pawn.gif");
                 movePlayerTo(player1View, player1X, player1Y);
                 mapGrid.getChildren().add(player1View);
                 // Set player1Turn to true when player 1 becomes visible
                 player1Turn = true;
 
             } else if (player2View == null) {
-                player2View = createPlayerView("player_pawn2.png");
+                player2View = createPlayerView("player_pawn2.gif");
                 movePlayerTo(player2View, player2X, player2Y);
                 mapGrid.getChildren().add(player2View);
                 // Set player1Turn to false after player 2 becomes visible
@@ -134,6 +134,16 @@ public class TSG extends Application {
         int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra screen space for button
         Scene scene = new Scene(rootPane, sceneWidth, sceneHeight);
 
+        Map<Color, Image> colorImageMap = new HashMap<>();
+        colorImageMap.put(Color.YELLOW, new Image("Castle.png"));
+        //colorImageMap.put(Color.GREEN, new Image(".png"));
+        colorImageMap.put(Color.BLACK, new Image("Wall.png"));
+        //colorImageMap.put(Color.BLUE, new Image(".png"));
+        colorImageMap.put(Color.RED, new Image("Trap.png"));
+        colorImageMap.put(Color.ORANGE, new Image("Market.png"));
+
+        placeImageInCell(mapGrid, mapGridCells, colorImageMap);
+
         scene.setOnKeyPressed(e -> {
             if (remainingSteps > 0) {
                 if (player1Turn) {
@@ -150,6 +160,23 @@ public class TSG extends Application {
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
+    }
+    private void placeImageInCell(GridPane mapGrid, Rectangle[][] mapGridCells, Map<Color, Image> colorImageMap) {
+        for (int i = 0; i < GRID_SIZE; i++) {
+            for (int j = 0; j < GRID_SIZE; j++) {
+                Color cellColor = (Color) mapGridCells[i][j].getFill();
+                if (colorImageMap.containsKey(cellColor)) {
+                    ImageView imageView = new ImageView(colorImageMap.get(cellColor));
+                    imageView.setFitWidth(CELL_SIZE);
+                    imageView.setFitHeight(CELL_SIZE);
+                    // Adjust the position of the image to align with the corresponding rectangle
+                    GridPane.setColumnIndex(imageView, i);
+                    GridPane.setRowIndex(imageView, j);
+                    // Add the image to the layout containing the rectangle
+                    mapGrid.getChildren().add(imageView);
+                }
+            }
+        }
     }
     private void initializeScoreboard() {
         // Create labels to display player information
@@ -187,7 +214,7 @@ public class TSG extends Application {
         Label gameInstructions4 = new Label("• Avoid Traps And Strategize To Win!");
 
         // Add a label for the legend
-        Label legendLabel = new Label("Legend");
+        Label legendLabel = new Label("Map Component's");
         legendLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
 
         // Create colored boxes to represent map components along with text labels
@@ -253,7 +280,6 @@ public class TSG extends Application {
         //scoreboard.setAlignment(Pos.CENTER);
         scoreboard.setPadding(new Insets(10));// Set padding to push the scoreboard away from the edge
     }
-
     private void updateScoreboard() {
         // Update player 1 information
         player1MoneyLabel.setText("Money: " + player1TreasureValue);
@@ -269,9 +295,9 @@ public class TSG extends Application {
 
         // Update the current player's turn indicator
         if (player1Turn) {
-            currentPlayerImageView.setImage(new Image("player_pawn.png")); // Set image for Player 1's turn
+            currentPlayerImageView.setImage(new Image("player_pawn.gif")); // Set image for Player 1's turn
         } else {
-            currentPlayerImageView.setImage(new Image("player_pawn2.png")); // Set image for Player 2's turn
+            currentPlayerImageView.setImage(new Image("player_pawn2.gif")); // Set image for Player 2's turn
         }
         currentPlayerImageView.setFitWidth(100); // Set the width of the image
         currentPlayerImageView.setFitHeight(100); // Set the height of the image
@@ -639,31 +665,34 @@ public class TSG extends Application {
         }
     }
 
-    private List<Integer> getAvailableIndices(Rectangle[][] mapGridCells, Color color) {  // To make sure my elements don't overlap castle
+    private List<Integer> getAvailableIndices(Rectangle[][] mapGridCells, Color color) {
         List<Integer> availableIndices = new ArrayList<>();
         for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
             int x = i % GRID_SIZE;
             int y = i / GRID_SIZE;
+            // Exclude the first and last cells
+            if ((x == 0 && y == 0) || (x == GRID_SIZE - 1 && y == GRID_SIZE - 1)) {
+                continue;
+            }
             if (mapGridCells[x][y].getFill() != Color.YELLOW) {
                 availableIndices.add(i);
             }
         }
         return availableIndices;
     }
-    private void placeRandomTreasures(Rectangle[][] mapGridCells, int count) { //to place the 8 treasures on the map.
+    private void placeRandomTreasures(Rectangle[][] mapGridCells, int count) {
         List<Treasure> treasuresList = new ArrayList<>(Arrays.asList(treasures));
         Collections.shuffle(treasuresList);
 
-        List<Integer> availableIndices = new ArrayList<>();
-        for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
-            int x = i % GRID_SIZE;
-            int y = i / GRID_SIZE;
-            if (mapGridCells[x][y].getFill() != Color.YELLOW) {
-                availableIndices.add(i);
-            }
-        }
+        List<Integer> availableIndices = getAvailableIndices(mapGridCells, Color.GREEN);
+
+        // Exclude first cell and last cell
+        availableIndices.remove(Integer.valueOf(0)); // Remove first cell
+        availableIndices.remove(Integer.valueOf(GRID_SIZE * GRID_SIZE - 1)); // Remove last cell
+
         Collections.shuffle(availableIndices);
-        for (int i = 0; i < count && i < treasuresList.size(); i++) {
+
+        for (int i = 0; i < count && i < treasuresList.size() && !availableIndices.isEmpty(); i++) {
             int index = availableIndices.get(i);
             int x = index % GRID_SIZE;
             int y = index / GRID_SIZE;
