@@ -137,10 +137,10 @@ public class TSG extends Application {
         Map<Color, Image> colorImageMap = new HashMap<>();
         colorImageMap.put(Color.YELLOW, new Image("Castle.png"));
         //colorImageMap.put(Color.GREEN, new Image(".png"));
-        colorImageMap.put(Color.BLACK, new Image("Wall.png"));
-        //colorImageMap.put(Color.BLUE, new Image(".png"));
-        colorImageMap.put(Color.RED, new Image("Trap.png"));
-        colorImageMap.put(Color.ORANGE, new Image("Market.png"));
+        colorImageMap.put(Color.BLACK, new Image("Wall.gif"));
+        colorImageMap.put(Color.BLUE, new Image("Lost Items.gif"));
+        colorImageMap.put(Color.RED, new Image("Trap.gif"));
+        colorImageMap.put(Color.ORANGE, new Image("Market.gif"));
 
         placeImageInCell(mapGrid, mapGridCells, colorImageMap);
 
@@ -321,7 +321,7 @@ public class TSG extends Application {
     }
     private int rollDie() { //Die Roller
         // Simulate rolling a six-sided die
-        return random.nextInt(3) + 1;
+        return random.nextInt(1) + 1;
     }
     private ImageView createPlayerView(String imagePath) { //Player view on the map
         ImageView playerView = new ImageView(new Image(imagePath));
