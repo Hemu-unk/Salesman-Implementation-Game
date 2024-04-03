@@ -86,10 +86,10 @@ public class TSG extends Application {
             }
         }
         setMapElement(GRID_SIZE / 2, GRID_SIZE / 2, Color.YELLOW);
-        placeRandomElements(mapGridCells, 12, Color.BLACK);
+        placeRandomElements(mapGridCells, 10, Color.BLACK);
         placeRandomElements(mapGridCells, 6, Color.ORANGE);
         placeRandomElements(mapGridCells, 7, Color.RED);
-        placeRandomElements(mapGridCells, 6, Color.BLUE);
+        placeRandomElements(mapGridCells, 9, Color.BLUE);
         placeRandomTreasures(mapGridCells, 8);
 
         rollButton = new Button("Roll Die");
@@ -136,7 +136,7 @@ public class TSG extends Application {
 
         Map<Color, Image> colorImageMap = new HashMap<>();
         colorImageMap.put(Color.YELLOW, new Image("Castle.png"));
-        //colorImageMap.put(Color.GREEN, new Image(".png"));
+        colorImageMap.put(Color.GREEN, new Image("Treasure.gif"));
         colorImageMap.put(Color.BLACK, new Image("Wall.gif"));
         colorImageMap.put(Color.BLUE, new Image("Lost Items.gif"));
         colorImageMap.put(Color.RED, new Image("Trap.gif"));
