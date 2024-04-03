@@ -1,6 +1,7 @@
 package com.example.phase1.Main;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -136,7 +137,7 @@ public class TSG extends Application {
 
         Map<Color, Image> colorImageMap = new HashMap<>();
         colorImageMap.put(Color.YELLOW, new Image("Castle.png"));
-        colorImageMap.put(Color.GREEN, new Image("Treasure.gif"));
+        //colorImageMap.put(Color.GREEN, new Image("Treasure.gif"));
         colorImageMap.put(Color.BLACK, new Image("Wall.gif"));
         colorImageMap.put(Color.BLUE, new Image("Lost Items.gif"));
         colorImageMap.put(Color.RED, new Image("Trap.gif"));
@@ -391,10 +392,13 @@ public class TSG extends Application {
             default:
                 return;
         }
-        colorPath(startX, startY, newX, newY);
 
-        movePlayerTo(playerView, newX, newY);
-        remainingSteps = 0;
+        // If the player has moved, color the path and update their position
+        if (newX != currentX || newY != currentY) {
+            colorPath(startX, startY, newX, newY);
+            movePlayerTo(playerView, newX, newY);
+            remainingSteps = 0;
+        }
     }
 
     private void colorPath(int startX, int startY, int endX, int endY) {
@@ -521,7 +525,7 @@ public class TSG extends Application {
         // Check if the player is on a blue cell
         else if (cellColor.equals(Color.BLUE)) {
             // Generate a random currency value between 100 and 300
-            int gainedMoney = random.nextInt(101) + 100; // 100 to 300 inclusive
+            int gainedMoney = random.nextInt(401) + 100; // 100 to 300 inclusive
 
             // Update the player's money
             if (player1Turn) {
@@ -597,10 +601,24 @@ public class TSG extends Application {
         } else {
             winner = "It's a tie!";
         }
+
+        // If it's a tie, set winner to an empty string
+        if (winner.equals("It's a tie!")) {
+            winner = "";
+        } else {
+            winner = winner + " wins with ";
+        }
+
+        // Create a label for winner message with bold styling, specific font, and increased text size
+        Label winnerLabel = new Label("Game Over! " + winner + Math.max(player1TreasuresFound, player2TreasuresFound) + " treasures!");
+        winnerLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'Arial';");
+
+        // Create and show the alert
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Game Over");
         alert.setHeaderText(null);
-        alert.setContentText("Game Over! " + winner + " wins with " + Math.max(player1TreasuresFound, player2TreasuresFound) + " treasures!");
+        alert.getDialogPane().setContent(winnerLabel);
+        alert.setOnHidden(event -> Platform.exit()); // Close the application when the alert is closed
         alert.showAndWait();
     }
 
@@ -703,10 +721,10 @@ public class TSG extends Application {
         }
     }
     private void populateWeaponsMarket() { // Weapon list and price linked to market/purchase weapon
-        weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 0));
-        weaponsMarket.put("Sword", new Weapon("Sword", 50, 0));
-        weaponsMarket.put("Bow", new Weapon("Bow", 40, 0));
-        weaponsMarket.put("Axe", new Weapon("Axe", 30, 0));
+        weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 200));
+        weaponsMarket.put("Sword", new Weapon("Sword", 50, 450));
+        weaponsMarket.put("Bow", new Weapon("Bow", 40, 350));
+        weaponsMarket.put("Axe", new Weapon("Axe", 30, 250));
     }
     private void purchaseWeapon(ImageView playerView, String playerName) {
         // Check if the player is on an orange cell
