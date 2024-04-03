@@ -96,7 +96,7 @@ public class TSG extends Application {
 
         rollButton = new Button("Roll Die");
         rollButton.setOnAction(e -> {
-            remainingSteps = rollDieAndDisplayResult(); // Store the result of the die roll
+            remainingSteps = rollDieAndDisplayResult();
 
             if (player1View == null) {
                 player1View = createPlayerView("player_pawn.gif");
@@ -126,14 +126,14 @@ public class TSG extends Application {
         root.getChildren().addAll(mapGrid, buttonBox);
 
         BorderPane rootPane = new BorderPane();
-        rootPane.setLeft(root); // Your game layout
+        rootPane.setLeft(root);
 
-        // Initialize and add the scoreboard to the right
+        // Initialize the scoreboard to the right
         initializeScoreboard();
-        rootPane.setRight(scoreboard); // Scoreboard layout
+        rootPane.setRight(scoreboard);
 
         int sceneWidth = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 260;
-        int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50; // Extra screen space for button
+        int sceneHeight = GRID_SIZE * CELL_SIZE + GRID_SIZE - 1 + 50;
         Scene scene = new Scene(rootPane, sceneWidth, sceneHeight);
 
         Map<Color, Image> colorImageMap = new HashMap<>();
@@ -171,43 +171,41 @@ public class TSG extends Application {
                     ImageView imageView = new ImageView(colorImageMap.get(cellColor));
                     imageView.setFitWidth(CELL_SIZE);
                     imageView.setFitHeight(CELL_SIZE);
-                    // Adjust the position of the image to align with the corresponding rectangle
                     GridPane.setColumnIndex(imageView, i);
                     GridPane.setRowIndex(imageView, j);
-                    // Add the image to the layout containing the rectangle
                     mapGrid.getChildren().add(imageView);
                 }
             }
         }
     }
     private void initializeScoreboard() {
-        // Create labels to display player information
+        //Scoreboard Information
         Label player1Label = new Label("Player 1");
-        player1Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
-        player1Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15)); // Set font for Player 1 label
+        player1Label.setStyle("-fx-font-weight: bold; -fx-underline: true;");
+        player1Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15));
         player1MoneyLabel = new Label("Money: " + player1TreasureValue);
         player1WeaponLabel = new Label("Weapon: " + (player1Weapons.isEmpty() ? "None" : player1Weapons.keySet().toString()));
         player1StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player1Weapons));
-        player1TreasureLabel = new Label("Treasure Collected: " + player1Treasures.size()); // Display treasure collected
+        player1TreasureLabel = new Label("Treasure Collected: " + player1Treasures.size());
 
         Label player2Label = new Label("Player 2");
-        player2Label.setStyle("-fx-font-weight: bold; -fx-underline: true;"); // Bold and underline style
-        player2Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15)); // Set font for Player 2 label
+        player2Label.setStyle("-fx-font-weight: bold; -fx-underline: true;");
+        player2Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15));
         player2MoneyLabel = new Label("Money: " + player2TreasureValue);
         player2WeaponLabel = new Label("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
         player2StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player2Weapons));
-        player2TreasureLabel = new Label("Treasure Collected: " + player2Treasures.size()); // Display treasure collected
+        player2TreasureLabel = new Label("Treasure Collected: " + player2Treasures.size());
 
-        // Add label to indicate turn
+        //Turn Indicator
         Label turnLabel = new Label("Player's Turn");
         turnLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
 
-        // Create an ImageView to display the image indicating the current player's turn
+        //Player Display
         currentPlayerImageView = new ImageView();
         currentPlayerImageView.setFitHeight(20);
         currentPlayerImageView.setFitWidth(20);
 
-        // Create instructions for the game with bullet points
+        // Instructions
         Label instructions = new Label("Instructions:");
         instructions.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
         Label gameInstructions1 = new Label("• Arrow Keys To Move.");
@@ -215,11 +213,11 @@ public class TSG extends Application {
         Label gameInstructions3 = new Label("• Objective Is To Collect The Most Treasure");
         Label gameInstructions4 = new Label("• Avoid Traps And Strategize To Win!");
 
-        // Add a label for the legend
+        //legend
         Label legendLabel = new Label("Map Component's");
         legendLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
 
-        // Create colored boxes to represent map components along with text labels
+        // Create colored boxes
         VBox legendBox = new VBox(5);
 
         HBox pair1 = new HBox(10);
@@ -253,7 +251,7 @@ public class TSG extends Application {
         pair6.getChildren().addAll(box6, label6);
 
         legendBox.getChildren().addAll(pair1, pair2, pair3, pair4, pair5, pair6);
-// Create a VBox to hold player information and instructions
+        // Create a VBox to hold player information and instructions
         scoreboard = new VBox(10);
         Label scoreboardTitle = new Label("Scoreboard");
         scoreboardTitle.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 20)); // Set the font weight to bold
@@ -279,8 +277,8 @@ public class TSG extends Application {
                 legendLabel,
                 legendBox
         );
-        //scoreboard.setAlignment(Pos.CENTER);
-        scoreboard.setPadding(new Insets(10));// Set padding to push the scoreboard away from the edge
+        //scoreboard.setAlignment(Pos.CENTER);//Centerize Scoreboard
+        scoreboard.setPadding(new Insets(10));// Push the scoreboard from the edge
     }
     private void updateScoreboard() {
         // Update player 1 information
@@ -297,14 +295,14 @@ public class TSG extends Application {
 
         // Update the current player's turn indicator
         if (player1Turn) {
-            currentPlayerImageView.setImage(new Image("player_pawn.gif")); // Set image for Player 1's turn
+            currentPlayerImageView.setImage(new Image("player_pawn.gif")); // Set image for Player 1
         } else {
-            currentPlayerImageView.setImage(new Image("player_pawn2.gif")); // Set image for Player 2's turn
+            currentPlayerImageView.setImage(new Image("player_pawn2.gif")); // Set image for Player 2
         }
-        currentPlayerImageView.setFitWidth(100); // Set the width of the image
-        currentPlayerImageView.setFitHeight(100); // Set the height of the image
+        currentPlayerImageView.setFitWidth(150); // width of the image
+        currentPlayerImageView.setFitHeight(150); // height of the image
     }
-    private int calculatePlayerStrength(Map<String, Weapon> playerWeapons) {
+    private int calculatePlayerStrength(Map<String, Weapon> playerWeapons) { //Strength for scoreboard
         int strength = 0;
         for (Weapon weapon : playerWeapons.values()) {
             strength += weapon.getStrength();
@@ -312,7 +310,7 @@ public class TSG extends Application {
         return strength;
     }
 
-    private int rollDieAndDisplayResult() { //Display Die Result
+    private int rollDieAndDisplayResult() { //Die Result Display
         int rollResult = rollDie();
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Die Roll Result");
@@ -322,8 +320,7 @@ public class TSG extends Application {
         return rollResult;
     }
     private int rollDie() { //Die Roller
-        // Simulate rolling a six-sided die
-        return random.nextInt(1) + 1;
+        return random.nextInt(3) + 1;
     }
     private ImageView createPlayerView(String imagePath) { //Player view on the map
         ImageView playerView = new ImageView(new Image(imagePath));
@@ -393,8 +390,7 @@ public class TSG extends Application {
             default:
                 return;
         }
-
-        // If the player has moved, color the path and update their position
+        // If the player has not moved should not lose turn.
         if (newX != currentX || newY != currentY) {
             colorPath(startX, startY, newX, newY);
             movePlayerTo(playerView, newX, newY);
@@ -404,43 +400,40 @@ public class TSG extends Application {
 
     private void colorPath(int startX, int startY, int endX, int endY) {
         ColorAdjust colorAdjust = new ColorAdjust();
-        colorAdjust.setHue(0.5); // Adjusted hue
+        colorAdjust.setHue(0.5); // Adjusted hue for cell
 
-        // Color the previous cell (starting position) if it's not the same as the current cell
+        // Color the previous cell
         if (startX != endX || startY != endY) {
             if (!isMapComponent(startX, startY)) {
                 mapGridCells[startX][startY].setEffect(colorAdjust);
             }
         }
-
-        // Determine the direction of movement
+        // Determine movement direction
         int deltaX = endX - startX;
         int deltaY = endY - startY;
 
-        // Color the path between the previous position and the current position
+        // Color the path
         if (deltaX != 0) {
-            // Player moved horizontally
+            // horizontally moved
             int signX = Integer.signum(deltaX);
             for (int x = startX + signX; x != endX; x += signX) {
-                if (!isMapComponent(x, startY)) { // Check if the cell is a map component
+                if (!isMapComponent(x, startY)) { // Check if map component
                     mapGridCells[x][startY].setEffect(colorAdjust);
                 }
             }
         } else if (deltaY != 0) {
-            // Player moved vertically
+            // vertically moved
             int signY = Integer.signum(deltaY);
             for (int y = startY + signY; y != endY; y += signY) {
-                if (!isMapComponent(startX, y)) { // Check if the cell is a map component
+                if (!isMapComponent(startX, y)) { // Check if map component
                     mapGridCells[startX][y].setEffect(colorAdjust);
                 }
             }
         }
-
-        // Uncolor the cell the player just moved to
         mapGridCells[endX][endY].setEffect(null);
     }
     private boolean isMapComponent(int x, int y) {
-        // Check if the cell is a map component (wall or other elements)
+        // Ignore Map Component's
         Color cellColor = (Color) mapGridCells[x][y].getFill();
         return cellColor.equals(Color.YELLOW)
                 || cellColor.equals(Color.BLACK)
@@ -452,7 +445,7 @@ public class TSG extends Application {
     private boolean isValidMove(int x, int y) {
         // Check if the move is within the bounds of the map
         if (x < 0 || x >= GRID_SIZE || y < 0 || y >= GRID_SIZE) {
-            return true; // Return true to indicate that the move is valid but out of bounds
+            return true;
         }
 
         Color cellColor = (Color) mapGridCells[x][y].getFill();
@@ -525,9 +518,8 @@ public class TSG extends Application {
         }
         // Check if the player is on a blue cell
         else if (cellColor.equals(Color.BLUE)) {
-            // Generate a random currency value between 100 and 300
-            int gainedMoney = random.nextInt(401) + 100; // 100 to 300 inclusive
-
+            // Generate a random value between 100 and 300
+            int gainedMoney = random.nextInt(401) + 100;
             // Update the player's money
             if (player1Turn) {
                 player1TreasureValue += gainedMoney;
@@ -536,7 +528,7 @@ public class TSG extends Application {
             }
             mapGridCells[x][y].setFill(Color.LIGHTSLATEGRAY);
 
-            // Inform the player about the gained money
+            // Display about the generated money
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Currency Found");
             alert.setHeaderText(null);
@@ -569,10 +561,10 @@ public class TSG extends Application {
                 }
                 // Add the treasure to the player's inventory
                 if (player1Turn) {
-                    // Add treasure to player 1's inventory (no immediate money update)
+                    // Add treasure to player 1's inventory
                     player1Treasures.put(treasureName, treasure);
                 } else {
-                    // Add treasure to player 2's inventory (no immediate money update)
+                    // Add treasure to player 2's inventory
                     player2Treasures.put(treasureName, treasure);
                 }
                 // Remove the treasure from the map grid cell
@@ -581,7 +573,7 @@ public class TSG extends Application {
             }
         }
 
-        // Check if the player is on the castle (yellow cell)
+        // Check if the player is on the castle
         else if (cellColor.equals(Color.YELLOW)) {
             if (player1Turn) {
                 // Sell items for player 1
@@ -602,7 +594,6 @@ public class TSG extends Application {
         } else {
             winner = "It's a tie!";
         }
-
         // If it's a tie, set winner to an empty string
         if (winner.equals("It's a tie!")) {
             winner = "";
@@ -610,19 +601,16 @@ public class TSG extends Application {
             winner = winner + " wins with ";
         }
 
-        // Create a label for winner message with bold styling, specific font, and increased text size
         Label winnerLabel = new Label("Game Over! " + winner + Math.max(player1TreasuresFound, player2TreasuresFound) + " treasures!");
         winnerLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'Arial';");
 
-        // Create and show the alert
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Congratulations! Your The Castle Owner");
         alert.setHeaderText(null);
         alert.getDialogPane().setContent(winnerLabel);
-        alert.setOnHidden(event -> Platform.exit()); // Close the application when the alert is closed
+        alert.setOnHidden(event -> Platform.exit()); // Close the application
         alert.showAndWait();
     }
-
     private void checkForPlayerCollision() { //player battle mechanism
 
         if (player1X == player2X && player1Y == player2Y) {
@@ -683,8 +671,7 @@ public class TSG extends Application {
             setMapElement(x, y, color);
         }
     }
-
-    private List<Integer> getAvailableIndices(Rectangle[][] mapGridCells, Color color) {
+    private List<Integer> getAvailableIndices(Rectangle[][] mapGridCells, Color color) { //get available map cells
         List<Integer> availableIndices = new ArrayList<>();
         for (int i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
             int x = i % GRID_SIZE;
