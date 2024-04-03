@@ -84,6 +84,7 @@ public class TSG extends Application {
                 cell.setStroke(Color.BLACK);
                 mapGrid.add(cell, i, j);
                 mapGridCells[i][j] = cell;
+                mapGridCells[i][j] = cell;
             }
         }
         setMapElement(GRID_SIZE / 2, GRID_SIZE / 2, Color.YELLOW);
@@ -615,7 +616,7 @@ public class TSG extends Application {
 
         // Create and show the alert
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Game Over");
+        alert.setTitle("Congratulations! Your The Castle Owner");
         alert.setHeaderText(null);
         alert.getDialogPane().setContent(winnerLabel);
         alert.setOnHidden(event -> Platform.exit()); // Close the application when the alert is closed
