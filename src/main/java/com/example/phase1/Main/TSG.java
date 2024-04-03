@@ -137,7 +137,7 @@ public class TSG extends Application {
 
         Map<Color, Image> colorImageMap = new HashMap<>();
         colorImageMap.put(Color.YELLOW, new Image("Castle.png"));
-        //colorImageMap.put(Color.GREEN, new Image("Treasure.gif"));
+        colorImageMap.put(Color.GREEN, new Image("Treasure.gif"));
         colorImageMap.put(Color.BLACK, new Image("Wall.gif"));
         colorImageMap.put(Color.BLUE, new Image("Lost Items.gif"));
         colorImageMap.put(Color.RED, new Image("Trap.gif"));
