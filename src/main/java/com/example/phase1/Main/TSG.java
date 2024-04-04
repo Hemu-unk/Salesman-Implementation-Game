@@ -245,7 +245,8 @@ public class TSG extends Application {
 
         legendBox.getChildren().addAll(pair1, pair2, pair3, pair4, pair5, pair6);
         // Create a VBox to hold player information and instructions
-        scoreboard = new VBox(10);
+
+        scoreboard = Scoreboard.createbox();
         Label scoreboardTitle = new Label("Scoreboard");
         scoreboardTitle.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 20)); // Set the font weight to bold
         scoreboard.getChildren().addAll(
@@ -702,14 +703,8 @@ public class TSG extends Application {
         int playerY = playerView == player1View ? player1Y : player2Y;
         Color playerCellColor = (Color) mapGridCells[playerX][playerY].getFill();
 
-        if (!playerCellColor.equals(Color.ORANGE)) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Cannot Purchase");
-            alert.setHeaderText(null);
-            alert.setContentText("You can only purchase weapons in orange markets.");
-            alert.showAndWait();
-            return;
-        }
+        Market.purchasechecker(playerCellColor);
+
         Map<String, Weapon> playerWeapons = playerName.equals("Player 1") ? player1Weapons : player2Weapons;
         final int[] playerTreasureValue = {playerName.equals("Player 1") ? player1TreasureValue : player2TreasureValue};
 
