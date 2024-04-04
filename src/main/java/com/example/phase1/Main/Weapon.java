@@ -1,5 +1,7 @@
 package com.example.phase1.Main;
 
+import java.util.Map;
+
 public class Weapon {
     private final String name;
     private int strength; // Change to non-final
@@ -19,6 +21,13 @@ public class Weapon {
 
     public int getStrength() {
 
+        return strength;
+    }
+    static int calculatePlayerStrength(Map<String, Weapon> playerWeapons) { //Strength for scoreboard
+        int strength = 0;
+        for (Weapon weapon : playerWeapons.values()) {
+            strength += weapon.getStrength();
+        }
         return strength;
     }
 

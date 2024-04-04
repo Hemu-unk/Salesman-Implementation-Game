@@ -178,7 +178,7 @@ public class TSG extends Application {
         player1Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15));
         player1MoneyLabel = new Label("Money: " + player1TreasureValue);
         player1WeaponLabel = new Label("Weapon: " + (player1Weapons.isEmpty() ? "None" : player1Weapons.keySet().toString()));
-        player1StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player1Weapons));
+        player1StrengthLabel = new Label("Strength: " + Weapon.calculatePlayerStrength(player1Weapons));
         player1TreasureLabel = new Label("Treasure Collected: " + player1Treasures.size());
 
         Label player2Label = new Label("Player 2");
@@ -186,7 +186,7 @@ public class TSG extends Application {
         player2Label.setFont(Font.font("CAMBRIA", FontWeight.BOLD, 15));
         player2MoneyLabel = new Label("Money: " + player2TreasureValue);
         player2WeaponLabel = new Label("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
-        player2StrengthLabel = new Label("Strength: " + calculatePlayerStrength(player2Weapons));
+        player2StrengthLabel = new Label("Strength: " + Weapon.calculatePlayerStrength(player2Weapons));
         player2TreasureLabel = new Label("Treasure Collected: " + player2Treasures.size());
 
         //Turn Indicator
@@ -277,13 +277,13 @@ public class TSG extends Application {
         // Update player 1 information
         player1MoneyLabel.setText("Money: " + player1TreasureValue);
         player1WeaponLabel.setText("Weapon: " + (player1Weapons.isEmpty() ? "None" : player1Weapons.keySet().toString()));
-        player1StrengthLabel.setText("Strength: " + calculatePlayerStrength(player1Weapons));
+        player1StrengthLabel.setText("Strength: " + Weapon.calculatePlayerStrength(player1Weapons));
         player1TreasureLabel.setText("Treasure Collected: " + player1Treasures.size());
 
         // Update player 2 information
         player2MoneyLabel.setText("Money: " + player2TreasureValue);
         player2WeaponLabel.setText("Weapon: " + (player2Weapons.isEmpty() ? "None" : player2Weapons.keySet().toString()));
-        player2StrengthLabel.setText("Strength: " + calculatePlayerStrength(player2Weapons));
+        player2StrengthLabel.setText("Strength: " + Weapon.calculatePlayerStrength(player2Weapons));
         player2TreasureLabel.setText("Treasure Collected: " + player2Treasures.size());
 
         // Update the current player's turn indicator
@@ -295,13 +295,7 @@ public class TSG extends Application {
         currentPlayerImageView.setFitWidth(150); // width of the image
         currentPlayerImageView.setFitHeight(150); // height of the image
     }
-    private int calculatePlayerStrength(Map<String, Weapon> playerWeapons) { //Strength for scoreboard
-        int strength = 0;
-        for (Weapon weapon : playerWeapons.values()) {
-            strength += weapon.getStrength();
-        }
-        return strength;
-    }
+
 
     private int rollDieAndDisplayResult() { //Die Result Display
         int rollResult = rollDie();
