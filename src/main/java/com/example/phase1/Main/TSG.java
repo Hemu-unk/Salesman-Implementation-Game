@@ -206,7 +206,7 @@ public class TSG extends Application {
         Label gameInstructions3 = new Label(Scoreboard.Instruct(4));
         Label gameInstructions4 = new Label(Scoreboard.Instruct(5));
 //could have done loop or array of instructions
-
+//
 
         //legend
         Label legendLabel = new Label("Map Component's");
