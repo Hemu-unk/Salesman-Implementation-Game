@@ -19,7 +19,16 @@ public static void purchasechecker(Color playerCellColor){
 
 }
 
+public static void ValueAlert(String playerName, int totalValue){
 
+
+    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    alert.setTitle("Items Sold");
+    alert.setHeaderText(null);
+    alert.setContentText(playerName + " sold their items for " + totalValue + " gold coins!");
+    alert.showAndWait();
+
+}
 
 }
 

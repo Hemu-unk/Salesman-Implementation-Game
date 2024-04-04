@@ -464,11 +464,13 @@ public class TSG extends Application {
             totalValue += treasure.getValue();
         }
         // Display a dialog showing the total value of all items
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        Market.ValueAlert(playerName, totalValue);
+
+        /*Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Items Sold");
         alert.setHeaderText(null);
         alert.setContentText(playerName + " sold their items for " + totalValue + " gold coins!");
-        alert.showAndWait();
+        alert.showAndWait();*/
 
         // Set the player's currency to the total value
         if (playerName.equals("Player 1")) {
