@@ -194,17 +194,17 @@ public class TSG extends Application {
         turnLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
 
         //Player Display
-        currentPlayerImageView = new ImageView();
+        ImageView currentPlayerImageView = new ImageView();
         currentPlayerImageView.setFitHeight(20);
         currentPlayerImageView.setFitWidth(20);
 
-        // Instructions
-        Label instructions = new Label("Instructions:");
+        // Instructions utilizing Instruct fxn from Scoreboard
+        Label instructions = new Label(Scoreboard.Instruct(1));
         instructions.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-font-family: 'CAMBRIA'; -fx-underline: true;");
-        Label gameInstructions1 = new Label("• Arrow Keys To Move.");
-        Label gameInstructions2 = new Label("• Press 'Enter' To Access Markets.");
-        Label gameInstructions3 = new Label("• Objective Is To Collect The Most Treasure");
-        Label gameInstructions4 = new Label("• Avoid Traps And Strategize To Win!");
+        Label gameInstructions1 = new Label(Scoreboard.Instruct(2));
+        Label gameInstructions2 = new Label(Scoreboard.Instruct(3));
+        Label gameInstructions3 = new Label(Scoreboard.Instruct(4));
+        Label gameInstructions4 = new Label(Scoreboard.Instruct(5));
 
         //legend
         Label legendLabel = new Label("Map Component's");
