@@ -205,6 +205,8 @@ public class TSG extends Application {
         Label gameInstructions2 = new Label(Scoreboard.Instruct(3));
         Label gameInstructions3 = new Label(Scoreboard.Instruct(4));
         Label gameInstructions4 = new Label(Scoreboard.Instruct(5));
+//could have done loop or array of instructions
+
 
         //legend
         Label legendLabel = new Label("Map Component's");
@@ -213,35 +215,37 @@ public class TSG extends Application {
         // Create colored boxes
         VBox legendBox = new VBox(5);
 
+        HBox pair1 = Scoreboard.createbox2(Color.YELLOW, "Castle");
+        /*
         HBox pair1 = new HBox(10);
         Rectangle box1 = new Rectangle(20, 20, Color.YELLOW);
         Label label1 = new Label("Castle");
         pair1.getChildren().addAll(box1, label1);
-
-        HBox pair2 = new HBox(10);
-        Rectangle box2 = new Rectangle(20, 20, Color.GREEN);
+*/
+        HBox pair2 =Scoreboard.createbox2(Color.GREEN, "Treasure");
+       /* Rectangle box2 = new Rectangle(20, 20, Color.GREEN);
         Label label2 = new Label("Treasure");
-        pair2.getChildren().addAll(box2, label2);
+        pair2.getChildren().addAll(box2, label2);*/
 
-        HBox pair3 = new HBox(10);
-        Rectangle box3 = new Rectangle(20, 20, Color.BLACK);
+        HBox pair3 = Scoreboard.createbox2(Color.BLACK, "Wall");
+     /*  Rectangle box3 = new Rectangle(20, 20, Color.BLACK);
         Label label3 = new Label("Wall");
-        pair3.getChildren().addAll(box3, label3);
+        pair3.getChildren().addAll(box3, label3);*/
 
-        HBox pair4 = new HBox(10);
-        Rectangle box4 = new Rectangle(20, 20, Color.ORANGE);
+        HBox pair4 = Scoreboard.createbox2(Color.ORANGE, "Market");
+ /*       Rectangle box4 = new Rectangle(20, 20, Color.ORANGE);
         Label label4 = new Label("Market");
         pair4.getChildren().addAll(box4, label4);
-
-        HBox pair5 = new HBox(10);
-        Rectangle box5 = new Rectangle(20, 20, Color.BLUE);
+*/
+        HBox pair5 = Scoreboard.createbox2(Color.BLUE, "Lost Item");
+      /*  Rectangle box5 = new Rectangle(20, 20, Color.BLUE);
         Label label5 = new Label("Lost Item");
-        pair5.getChildren().addAll(box5, label5);
+        pair5.getChildren().addAll(box5, label5);*/
 
-        HBox pair6 = new HBox(10);
-        Rectangle box6 = new Rectangle(20, 20, Color.RED);
+        HBox pair6 = Scoreboard.createbox2(Color.RED, "Trap");
+      /*  Rectangle box6 = new Rectangle(20, 20, Color.RED);
         Label label6 = new Label("Trap");
-        pair6.getChildren().addAll(box6, label6);
+        pair6.getChildren().addAll(box6, label6);*/
 
         legendBox.getChildren().addAll(pair1, pair2, pair3, pair4, pair5, pair6);
         // Create a VBox to hold player information and instructions
