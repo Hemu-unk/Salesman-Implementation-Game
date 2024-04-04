@@ -24,6 +24,8 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import java.util.*;
 
+import static com.example.phase1.Main.Treasure.treasures;
+
 public class TSG extends Application {
     private static final int GRID_SIZE =9;
     private static final int CELL_SIZE =90;
@@ -49,16 +51,7 @@ public class TSG extends Application {
     private Label player1TreasureLabel;
     private Label player2TreasureLabel;
     private ImageView currentPlayerImageView;
-    private static final Treasure[] treasures = {
-            new Treasure("Diamond Ring", 100),
-            new Treasure("Jewel-encrusted Sword", 150),
-            new Treasure("Golden Goblet", 200),
-            new Treasure("Crystal Goblets", 120),
-            new Treasure("Wooden Bow", 80),
-            new Treasure("Paladin’s Shield", 180),
-            new Treasure("Golden Key", 90),
-            new Treasure("Dragon’s Scroll", 250)
-    };
+
     private final Map<String, Weapon> weaponsMarket = new HashMap<>();
     private final Map<String, Weapon> player1Weapons = new HashMap<>();
     private final Map<String, Weapon> player2Weapons = new HashMap<>();
