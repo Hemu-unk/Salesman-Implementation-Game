@@ -151,7 +151,7 @@ public class TSG extends Application {
             }
         });
 
-        stage.setTitle("Traveling Salesman Game");
+        stage.setTitle("Rogue Knight Adventure");
         stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
@@ -701,12 +701,7 @@ public class TSG extends Application {
             mapGridCells[x][y].setFill(Color.GREEN);
         }
     }
-    private void populateWeaponsMarket() { // Weapon list and price linked to market/purchase weapon
-        weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 200));
-        weaponsMarket.put("Sword", new Weapon("Sword", 50, 450));
-        weaponsMarket.put("Bow", new Weapon("Bow", 40, 350));
-        weaponsMarket.put("Axe", new Weapon("Axe", 30, 250));
-    }
+
     private void purchaseWeapon(ImageView playerView, String playerName) {
         // Check if the player is on an orange cell
         int playerX = playerView == player1View ? player1X : player2X;
@@ -776,6 +771,13 @@ public class TSG extends Application {
                 alert.showAndWait();
             }
         });
+    }
+
+    void populateWeaponsMarket() { // Weapon list and price linked to market/purchase weapon
+        weaponsMarket.put("Treasure Location", new Weapon("Treasure Location", 0, 200));
+        weaponsMarket.put("Sword", new Weapon("Sword", 50, 450));
+        weaponsMarket.put("Bow", new Weapon("Bow", 40, 350));
+        weaponsMarket.put("Axe", new Weapon("Axe", 30, 250));
     }
     private void revealUndiscoveredTreasures() { //turn green cells to pink to reveal the treasure
         for (int i = 0; i < GRID_SIZE; i++) {
