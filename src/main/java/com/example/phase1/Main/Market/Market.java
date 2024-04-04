@@ -1,13 +1,12 @@
-package com.example.phase1.Main;
+package com.example.phase1.Main.Market;
 
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
-import java.awt.*;
 
 public class Market {
 
 
-static void purchasechecker(Color playerCellColor){
+public static void purchasechecker(Color playerCellColor){
     if (!playerCellColor.equals(javafx.scene.paint.Color.ORANGE)) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Cannot Purchase");
@@ -21,4 +20,8 @@ static void purchasechecker(Color playerCellColor){
 }
 
 
+
 }
+
+
+

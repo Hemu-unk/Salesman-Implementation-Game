@@ -1,4 +1,4 @@
-package com.example.phase1.Main;
+package com.example.phase1.Main.Treasure;
 
 public class Treasure {
     private final String name;

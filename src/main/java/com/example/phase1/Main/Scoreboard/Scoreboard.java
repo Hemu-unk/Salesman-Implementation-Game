@@ -1,4 +1,4 @@
-package com.example.phase1.Main;
+package com.example.phase1.Main.Scoreboard;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -8,7 +8,7 @@ import javafx.scene.shape.Rectangle;
 
 public class Scoreboard {
 
-    static VBox createbox(){
+    public static VBox createbox(){
 
 
 
@@ -16,14 +16,14 @@ public class Scoreboard {
 
     }
 //
-    static HBox createbox2(Color color, String name) {
+    public static HBox createbox2(Color color, String name) {
         HBox pair1 = new HBox(10);
         Rectangle box1 = new Rectangle(20, 20, color);
         Label label1 = new Label(name);
         pair1.getChildren().addAll(box1, label1);
         return pair1;
     }
-    static String Instruct(int num){
+    public static String Instruct(int num){
        String pop = "";
         if (num==1){
             pop = "Instructions:";

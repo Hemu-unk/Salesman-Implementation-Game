@@ -1,5 +1,9 @@
-package com.example.phase1.Main;
+package com.example.phase1.Main.Start;
 
+import com.example.phase1.Main.Market.Market;
+import com.example.phase1.Main.Scoreboard.Scoreboard;
+import com.example.phase1.Main.Treasure.Treasure;
+import com.example.phase1.Main.Weapon.Weapon;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -24,7 +28,7 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import java.util.*;
 
-import static com.example.phase1.Main.Treasure.treasures;
+import static com.example.phase1.Main.Treasure.Treasure.treasures;
 
 public class TSG extends Application {
     private static final int GRID_SIZE =9;
@@ -729,8 +733,10 @@ public class TSG extends Application {
 
         result.ifPresent(weaponName -> {
             // Process to purchase of other weapons
+
             Weapon weapon = weaponsMarket.get(weaponName);
             if (weapon != null) {
+                //marketselect
                 if (playerTreasureValue[0] >= weapon.getPrice()) {
                     if (weapon.getName().equals("Treasure Location")) {
                         // Reveal all undiscovered treasures

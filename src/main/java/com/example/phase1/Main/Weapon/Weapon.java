@@ -1,4 +1,4 @@
-package com.example.phase1.Main;
+package com.example.phase1.Main.Weapon;
 
 import java.util.Map;
 
@@ -23,7 +23,7 @@ public class Weapon {
 
         return strength;
     }
-    static int calculatePlayerStrength(Map<String, Weapon> playerWeapons) { //Strength for scoreboard
+    public static int calculatePlayerStrength(Map<String, Weapon> playerWeapons) { //Strength for scoreboard
         int strength = 0;
         for (Weapon weapon : playerWeapons.values()) {
             strength += weapon.getStrength();
