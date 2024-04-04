@@ -15,7 +15,7 @@ public class Scoreboard {
         return new VBox(10);
 
     }
-//
+////
     public static HBox createbox2(Color color, String name) {
         HBox pair1 = new HBox(10);
         Rectangle box1 = new Rectangle(20, 20, color);

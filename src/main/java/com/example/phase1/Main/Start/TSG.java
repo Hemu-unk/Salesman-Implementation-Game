@@ -470,7 +470,7 @@ public class TSG extends Application {
         alert.setTitle("Items Sold");
         alert.setHeaderText(null);
         alert.setContentText(playerName + " sold their items for " + totalValue + " gold coins!");
-        alert.showAndWait();*/
+        alert.showAndWait();*///
 
         // Set the player's currency to the total value
         if (playerName.equals("Player 1")) {

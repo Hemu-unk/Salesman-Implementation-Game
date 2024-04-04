@@ -13,7 +13,7 @@ public class Treasure {
             new Treasure("Golden Key", 90),
             new Treasure("Dragon’s Scroll", 250)
     };
-
+//
 
     public Treasure(String name, int value) {
         this.name = name;

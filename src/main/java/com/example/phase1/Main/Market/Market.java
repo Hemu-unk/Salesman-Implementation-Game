@@ -27,7 +27,7 @@ public static void ValueAlert(String playerName, int totalValue){
     alert.setHeaderText(null);
     alert.setContentText(playerName + " sold their items for " + totalValue + " gold coins!");
     alert.showAndWait();
-
+//
 }
 
 }

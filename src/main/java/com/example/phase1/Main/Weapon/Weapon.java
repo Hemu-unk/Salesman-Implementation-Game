@@ -29,7 +29,7 @@ public class Weapon {
             strength += weapon.getStrength();
         }
         return strength;
-    }
+    }//
 
     public void setStrength(int strength) { // Add setter method for strength
 
