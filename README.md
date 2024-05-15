@@ -1,5 +1,4 @@
-# Travelling Salesman Game
-
+# TRAVELLING SALESMEN GAME
 ## Overview
 The Traveling Salesman Game is a fun and strategic adventure where players act as traveling salespeople searching for treasures. Players move around a 10×10 grid map, exploring different houses, markets, and traps. The goal is to find and deliver the most treasures to the castle to win the game.
 
